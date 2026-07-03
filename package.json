@@ -1,0 +1,24 @@
+{
+  "name": "caffeine-job-copilot",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Chrome extension and simple backend starter for a review-first ATS application assistant.",
+  "scripts": {
+    "dev": "node backend/server.mjs",
+    "start": "node backend/server.mjs",
+    "test": "node --test",
+    "typecheck": "tsc --noEmit",
+    "lint": "biome check .",
+    "format": "biome format --write .",
+    "build": "node scripts/build-extension.mjs"
+  },
+  "dependencies": {},
+  "devDependencies": {
+    "@biomejs/biome": "^1.9.4",
+    "typescript": "^5.5.4"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}
