@@ -3,37 +3,105 @@ import Time "mo:core/Time";
 import Types "../types/ats-autofill";
 import AtsAutofill "../lib/ats-autofill";
 
-mixin (profileState : { var profile : ?Types.Profile }, answersState : { var answers : [Types.GeneratedAnswer]; var nextId : Nat }) {
-  public shared ({ caller }) func saveProfile(text : Text) : async () {
+mixin (
+  profileState : { var profile : ?Types.LivingProfile },
+  answersState : { var answers : [Types.AnswerBankEntry]; var nextId : Nat },
+  applicationsState : { var applications : [Types.ApplicationRecord]; var nextId : Nat },
+  draftsState : { var drafts : [Types.DraftResponse]; var nextId : Nat },
+) {
+  public shared ({ caller }) func saveProfile(profile : Types.LivingProfile) : async Types.LivingProfile {
     ignore caller;
-    profileState.profile := ?AtsAutofill.saveProfile(text, Time.now());
+    let saved = AtsAutofill.saveProfile(profile, Time.now());
+    profileState.profile := ?saved;
+    saved;
   };
 
-  public query func getProfile() : async ?Types.Profile {
+  public query func getProfile() : async ?Types.LivingProfile {
     profileState.profile;
   };
 
-  public query func getProfileCharCount() : async Nat {
-    AtsAutofill.getProfileText(profileState.profile).size();
-  };
-
-  public shared ({ caller }) func generateAnswer(question : Text) : async Types.GeneratedAnswer {
+  public shared ({ caller }) func saveAnswer(
+    kind : Text,
+    prompt : Text,
+    answer : Text,
+    sensitive : Bool,
+  ) : async Types.AnswerBankEntry {
     ignore caller;
-    let id = answersState.nextId;
-    answersState.nextId := id + 1;
-    let answer = AtsAutofill.generateAnswer(profileState.profile, question, Time.now());
-    let stamped = { answer with id };
-    let prev = answersState.answers;
-    answersState.answers := Array.tabulate(
-      prev.size() + 1,
-      func(i) {
-        if (i < prev.size()) { prev[i] } else { stamped };
-      }
+    let result = AtsAutofill.addOrUpdateAnswer(
+      answersState.answers,
+      answersState.nextId,
+      kind,
+      prompt,
+      answer,
+      sensitive,
+      Time.now(),
     );
-    stamped;
+    answersState.answers := result.0;
+    answersState.nextId := result.1;
+    result.2;
   };
 
-  public query func recentAnswers() : async [Types.GeneratedAnswer] {
+  public query func listAnswers() : async [Types.AnswerBankEntry] {
     AtsAutofill.recentAnswers(answersState.answers);
+  };
+
+  public shared ({ caller }) func createApplication(
+    company : Text,
+    title : Text,
+    url : Text,
+    platform : Text,
+    status : Text,
+    usedAnswerIds : [Nat],
+  ) : async Types.ApplicationRecord {
+    ignore caller;
+    let result = AtsAutofill.createApplication(
+      applicationsState.applications,
+      applicationsState.nextId,
+      company,
+      title,
+      url,
+      platform,
+      status,
+      usedAnswerIds,
+      Time.now(),
+    );
+    applicationsState.applications := result.0;
+    applicationsState.nextId := result.1;
+    result.2;
+  };
+
+  public query func listApplications() : async [Types.ApplicationRecord] {
+    AtsAutofill.recentApplications(applicationsState.applications);
+  };
+
+  public shared ({ caller }) func createDraft(request : Types.DraftRequest) : async Types.DraftResponse {
+    ignore caller;
+    let draft = AtsAutofill.createDraft(
+      request,
+      profileState.profile,
+      answersState.answers,
+      draftsState.nextId,
+      Time.now(),
+    );
+    draftsState.drafts := append(draftsState.drafts, draft);
+    draftsState.nextId += 1;
+    draft;
+  };
+
+  public query func recentDrafts() : async [Types.DraftResponse] {
+    draftsState.drafts;
+  };
+
+  public query func getExtensionContractVersion() : async Text {
+    "ats-autofill-contract-v1";
+  };
+
+  func append<T>(items : [T], item : T) : [T] {
+    Array.tabulate<T>(
+      items.size() + 1,
+      func(i) {
+        if (i < items.size()) { items[i] } else { item };
+      },
+    );
   };
 };
