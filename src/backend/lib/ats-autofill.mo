@@ -1,52 +1,263 @@
 import Array "mo:core/Array";
-import Iter "mo:core/Iter";
 import Text "mo:core/Text";
 import Types "../types/ats-autofill";
 
 module {
-  public type Profile = Types.Profile;
-  public type GeneratedAnswer = Types.GeneratedAnswer;
+  public type LivingProfile = Types.LivingProfile;
+  public type AnswerBankEntry = Types.AnswerBankEntry;
+  public type ApplicationRecord = Types.ApplicationRecord;
+  public type DetectedField = Types.DetectedField;
+  public type DraftRequest = Types.DraftRequest;
+  public type DraftResponse = Types.DraftResponse;
+  public type FieldSuggestion = Types.FieldSuggestion;
 
-  public func saveProfile(profile : Text, now : Int) : Profile {
-    { text = profile; updatedAt = now };
-  };
-
-  public func getProfileText(profile : ?Profile) : Text {
-    switch (profile) {
-      case (?p) { p.text };
-      case null { "" };
+  public func defaultProfile(now : Int) : LivingProfile {
+    {
+      identity = {
+        fullName = "";
+        email = "";
+        phone = "";
+        location = "";
+        linkedin = "";
+        portfolio = "";
+      };
+      headline = "";
+      summary = "";
+      skills = [];
+      experience = [];
+      projects = [];
+      education = [];
+      preferences = [];
+      updatedAt = now;
     };
   };
 
-  public func generateAnswer(profile : ?Profile, question : Text, now : Int) : GeneratedAnswer {
-    let profileText = getProfileText(profile);
-    let answer = if (profileText == "") {
-      "No profile saved yet. Add your background to generate tailored answers."
-    } else {
-      // Simple keyword matching: collect question words that appear in the profile.
-      let words = question.split(#char ' ').toArray();
-      let matched = words.filter(
-        func(word) {
-          word.size() > 3 and profileText.contains(#text word)
-        }
-      );
-      if (matched.size() == 0) {
-        profileText
-      } else {
-        let keywords = matched.values().join(", ");
-        "Based on your profile (keywords: " # keywords # "): " # profileText
+  public func saveProfile(profile : LivingProfile, now : Int) : LivingProfile {
+    { profile with updatedAt = now };
+  };
+
+  public func addOrUpdateAnswer(
+    answers : [AnswerBankEntry],
+    nextId : Nat,
+    kind : Text,
+    prompt : Text,
+    answer : Text,
+    sensitive : Bool,
+    now : Int,
+  ) : ([AnswerBankEntry], Nat, AnswerBankEntry) {
+    let existing = findAnswerByKind(answers, kind);
+    switch (existing) {
+      case (?entry) {
+        let updated = {
+          entry with prompt = prompt;
+          answer = answer;
+          sensitive = sensitive;
+          updatedAt = now;
+        };
+        (replaceAnswer(answers, updated), nextId, updated);
+      };
+      case null {
+        let created = {
+          id = nextId;
+          kind = kind;
+          prompt = prompt;
+          answer = answer;
+          sensitive = sensitive;
+          updatedAt = now;
+        };
+        (append(answers, created), nextId + 1, created);
       };
     };
-    { id = 0; question; answer; createdAt = now };
   };
 
-  public func recentAnswers(answers : [GeneratedAnswer]) : [GeneratedAnswer] {
-    let total = answers.size();
-    if (total <= 5) {
-      answers
+  public func createApplication(
+    applications : [ApplicationRecord],
+    nextId : Nat,
+    company : Text,
+    title : Text,
+    url : Text,
+    platform : Text,
+    status : Text,
+    usedAnswerIds : [Nat],
+    now : Int,
+  ) : ([ApplicationRecord], Nat, ApplicationRecord) {
+    let created = {
+      id = nextId;
+      company = company;
+      title = title;
+      url = url;
+      platform = platform;
+      status = status;
+      usedAnswerIds = usedAnswerIds;
+      createdAt = now;
+      updatedAt = now;
+    };
+    (append(applications, created), nextId + 1, created);
+  };
+
+  public func createDraft(
+    request : DraftRequest,
+    profile : ?LivingProfile,
+    answers : [AnswerBankEntry],
+    nextId : Nat,
+    now : Int,
+  ) : DraftResponse {
+    {
+      id = nextId;
+      mode = request.mode;
+      platform = request.platform;
+      url = request.url;
+      createdAt = now;
+      suggestions = Array.map<DetectedField, FieldSuggestion>(
+        request.fields,
+        func(field) {
+          let kind = classifyField(field);
+          let answer = findAnswerByKind(answers, kind);
+          let valueAndSource = suggestValue(kind, field, request, profile, answer);
+          let sensitive = isSensitiveKind(kind) or optionSensitive(answer);
+          {
+            fieldId = field.id;
+            label = bestLabel(field);
+            kind = kind;
+            value = valueAndSource.0;
+            source = valueAndSource.1;
+            confidence = valueAndSource.2;
+            requiresReview = sensitive or kind == "custom" or request.mode == "tailored-draft";
+          };
+        },
+      );
+    };
+  };
+
+  public func recentApplications(applications : [ApplicationRecord]) : [ApplicationRecord] {
+    tail(applications, 10);
+  };
+
+  public func recentAnswers(answers : [AnswerBankEntry]) : [AnswerBankEntry] {
+    tail(answers, 20);
+  };
+
+  func suggestValue(
+    kind : Text,
+    field : DetectedField,
+    request : DraftRequest,
+    profile : ?LivingProfile,
+    answer : ?AnswerBankEntry,
+  ) : (Text, Text, Nat) {
+    switch (answer) {
+      case (?entry) { return (entry.answer, "approved-answer", 92) };
+      case null {};
+    };
+
+    switch (profile) {
+      case null { ("", "missing-profile", 0) };
+      case (?p) {
+        if (kind == "fullName") { (p.identity.fullName, "profile.identity", 88) }
+        else if (kind == "email") { (p.identity.email, "profile.identity", 90) }
+        else if (kind == "phone") { (p.identity.phone, "profile.identity", 88) }
+        else if (kind == "location") { (p.identity.location, "profile.identity", 82) }
+        else if (kind == "linkedin") { (p.identity.linkedin, "profile.links", 86) }
+        else if (kind == "portfolio") { (p.identity.portfolio, "profile.links", 86) }
+        else if (kind == "coverLetter") {
+          (
+            "I am interested in " # request.job.title # " at " # request.job.company # ". " # p.summary,
+            "tailored-draft",
+            62,
+          )
+        } else if (kind == "custom" and request.mode == "tailored-draft") {
+          (
+            "Draft from profile: " # p.summary,
+            "tailored-draft",
+            45,
+          )
+        } else {
+          ignore field;
+          ("", "no-match", 0);
+        };
+      };
+    };
+  };
+
+  func classifyField(field : DetectedField) : Text {
+    let haystack = field.label # " " # field.name # " " # field.placeholder # " " # field.ariaLabel;
+    if (containsAny(haystack, ["email", "e-mail"])) { "email" }
+    else if (containsAny(haystack, ["phone", "mobile", "cell"])) { "phone" }
+    else if (containsAny(haystack, ["first name", "given name"])) { "firstName" }
+    else if (containsAny(haystack, ["last name", "surname", "family name"])) { "lastName" }
+    else if (containsAny(haystack, ["full name", "legal name", "name"])) { "fullName" }
+    else if (containsAny(haystack, ["location", "city", "state", "address"])) { "location" }
+    else if (containsAny(haystack, ["linkedin"])) { "linkedin" }
+    else if (containsAny(haystack, ["portfolio", "website", "github", "personal site"])) { "portfolio" }
+    else if (containsAny(haystack, ["resume", "cv"])) { "resume" }
+    else if (containsAny(haystack, ["cover letter"])) { "coverLetter" }
+    else if (containsAny(haystack, ["authorized", "work authorization", "eligible to work"])) { "workAuthorization" }
+    else if (containsAny(haystack, ["sponsor", "sponsorship", "visa"])) { "sponsorship" }
+    else if (containsAny(haystack, ["salary", "compensation", "pay"])) { "salary" }
+    else { "custom" };
+  };
+
+  func containsAny(text : Text, needles : [Text]) : Bool {
+    var found = false;
+    for (needle in needles.vals()) {
+      if (Text.contains(text, #text needle)) {
+        found := true;
+      };
+    };
+    found;
+  };
+
+  func bestLabel(field : DetectedField) : Text {
+    if (field.label != "") { field.label }
+    else if (field.placeholder != "") { field.placeholder }
+    else if (field.name != "") { field.name }
+    else { field.id };
+  };
+
+  func isSensitiveKind(kind : Text) : Bool {
+    kind == "workAuthorization" or kind == "sponsorship" or kind == "salary";
+  };
+
+  func optionSensitive(answer : ?AnswerBankEntry) : Bool {
+    switch (answer) {
+      case (?entry) { entry.sensitive };
+      case null { false };
+    };
+  };
+
+  func findAnswerByKind(answers : [AnswerBankEntry], kind : Text) : ?AnswerBankEntry {
+    for (entry in answers.vals()) {
+      if (entry.kind == kind) {
+        return ?entry;
+      };
+    };
+    null;
+  };
+
+  func replaceAnswer(answers : [AnswerBankEntry], updated : AnswerBankEntry) : [AnswerBankEntry] {
+    Array.map<AnswerBankEntry, AnswerBankEntry>(
+      answers,
+      func(entry) {
+        if (entry.id == updated.id) { updated } else { entry };
+      },
+    );
+  };
+
+  func append<T>(items : [T], item : T) : [T] {
+    Array.tabulate<T>(
+      items.size() + 1,
+      func(i) {
+        if (i < items.size()) { items[i] } else { item };
+      },
+    );
+  };
+
+  func tail<T>(items : [T], count : Nat) : [T] {
+    let total = items.size();
+    if (total <= count) {
+      items;
     } else {
-      let start = total - 5;
-      Array.tabulate(5, func(i) { answers[start + i] })
+      let start = total - count;
+      Array.tabulate<T>(count, func(i) { items[start + i] });
     };
   };
 };

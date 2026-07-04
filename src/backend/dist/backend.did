@@ -9,18 +9,6 @@ type Result =
    err: Error;
    ok;
  };
-type Profile = 
- record {
-   "text": text;
-   updatedAt: int;
- };
-type GeneratedAnswer = 
- record {
-   answer: text;
-   createdAt: int;
-   id: nat;
-   question: text;
- };
 type Error = 
  variant {
    AmbiguousAttribute: record {
@@ -43,19 +31,133 @@ type Error =
    UnknownNonce;
    UntrustedSsoSource: record {domain: text;};
  };
+type ProfileIdentity = 
+ record {
+   email: text;
+   fullName: text;
+   linkedin: text;
+   location: text;
+   phone: text;
+   portfolio: text;
+ };
+type WorkExperience = 
+ record {
+   company: text;
+   endDate: text;
+   highlights: vec text;
+   startDate: text;
+   title: text;
+ };
+type Project = 
+ record {
+   highlights: vec text;
+   name: text;
+   summary: text;
+   url: text;
+ };
+type LivingProfile = 
+ record {
+   education: vec text;
+   experience: vec WorkExperience;
+   headline: text;
+   identity: ProfileIdentity;
+   preferences: vec text;
+   projects: vec Project;
+   skills: vec text;
+   summary: text;
+   updatedAt: int;
+ };
+type AnswerBankEntry = 
+ record {
+   answer: text;
+   id: nat;
+   kind: text;
+   prompt: text;
+   sensitive: bool;
+   updatedAt: int;
+ };
+type ApplicationRecord = 
+ record {
+   company: text;
+   createdAt: int;
+   id: nat;
+   platform: text;
+   status: text;
+   title: text;
+   updatedAt: int;
+   url: text;
+   usedAnswerIds: vec nat;
+ };
+type DraftJobContext = 
+ record {
+   company: text;
+   description: text;
+   title: text;
+ };
+type DetectedField = 
+ record {
+   ariaLabel: text;
+   fieldType: text;
+   id: text;
+   label: text;
+   name: text;
+   placeholder: text;
+   tagName: text;
+ };
+type DraftRequest = 
+ record {
+   fields: vec DetectedField;
+   job: DraftJobContext;
+   mode: text;
+   pageTitle: text;
+   platform: text;
+   url: text;
+ };
+type FieldSuggestion = 
+ record {
+   confidence: nat;
+   fieldId: text;
+   kind: text;
+   label: text;
+   requiresReview: bool;
+   source: text;
+   value: text;
+ };
+type DraftResponse = 
+ record {
+   createdAt: int;
+   id: nat;
+   mode: text;
+   platform: text;
+   suggestions: vec FieldSuggestion;
+   url: text;
+ };
 service : {
   __accessControlState: () -> (reserved) query;
   __answersState: () -> (reserved) query;
+  __applicationsState: () -> (reserved) query;
+  __draftsState: () -> (reserved) query;
   __profileState: () -> (reserved) query;
   _initialize_access_control: () -> ();
   _internet_identity_sign_in_finish: () -> (Result);
   _internet_identity_sign_in_start: () -> (blob);
   assignCallerUserRole: (user: principal, role: UserRole) -> ();
-  generateAnswer: (question: text) -> (GeneratedAnswer);
+  createApplication: (
+      company: text,
+      title: text,
+      url: text,
+      platform: text,
+      status: text,
+      usedAnswerIds: vec nat,
+    ) -> (ApplicationRecord);
+  createDraft: (DraftRequest) -> (DraftResponse);
   getCallerUserRole: () -> (UserRole) query;
-  getProfile: () -> (opt Profile) query;
-  getProfileCharCount: () -> (nat) query;
+  getExtensionContractVersion: () -> (text) query;
+  getProfile: () -> (opt LivingProfile) query;
   isCallerAdmin: () -> (bool) query;
-  recentAnswers: () -> (vec GeneratedAnswer) query;
-  saveProfile: ("text": text) -> ();
+  listAnswers: () -> (vec AnswerBankEntry) query;
+  listApplications: () -> (vec ApplicationRecord) query;
+  recentDrafts: () -> (vec DraftResponse) query;
+  saveAnswer: (kind: text, prompt: text, answer: text, sensitive: bool) -> (AnswerBankEntry);
+  saveProfile: (LivingProfile) -> (LivingProfile);
 }

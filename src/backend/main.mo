@@ -10,8 +10,10 @@ actor {
   let accessControlState : AccessControl.AccessControlState;
   include MixinAuthorization(accessControlState, null);
 
-  let profileState : { var profile : ?Types.Profile };
-  let answersState : { var answers : [Types.GeneratedAnswer]; var nextId : Nat };
+  let profileState : { var profile : ?Types.LivingProfile };
+  let answersState : { var answers : [Types.AnswerBankEntry]; var nextId : Nat };
+  let applicationsState : { var applications : [Types.ApplicationRecord]; var nextId : Nat };
+  let draftsState : { var drafts : [Types.DraftResponse]; var nextId : Nat };
 
-  include AtsAutofillApi(profileState, answersState);
+  include AtsAutofillApi(profileState, answersState, applicationsState, draftsState);
 };

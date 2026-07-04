@@ -5058,7 +5058,7 @@ function sqrt5mod8(Fp3, n) {
   return root2;
 }
 function sqrt9mod16(P2) {
-  const Fp_ = Field(P2);
+  const Fp_ = Field$1(P2);
   const tn = tonelliShanks(P2);
   const c1 = tn(Fp_, Fp_.neg(Fp_.ONE));
   const c2 = tn(Fp_, c1);
@@ -5089,7 +5089,7 @@ function tonelliShanks(P2) {
     S2++;
   }
   let Z2 = _2n$6;
-  const _Fp = Field(P2);
+  const _Fp = Field$1(P2);
   while (FpLegendre(_Fp, Z2) === 1) {
     if (Z2++ > 1e3)
       throw new Error("Cannot find square root: probably non-prime P");
@@ -5222,7 +5222,7 @@ function nLength(n, nBitLength) {
   const nByteLength = Math.ceil(_nBitLength / 8);
   return { nBitLength: _nBitLength, nByteLength };
 }
-function Field(ORDER, bitLenOrOpts, isLE = false, opts = {}) {
+function Field$1(ORDER, bitLenOrOpts, isLE = false, opts = {}) {
   if (ORDER <= _0n$6)
     throw new Error("invalid field: expected ORDER > 0, got " + ORDER);
   let _nbitLength = void 0;
@@ -5592,7 +5592,7 @@ function createField(order, field, isLE) {
     validateField(field);
     return field;
   } else {
-    return Field(order, { isLE });
+    return Field$1(order, { isLE });
   }
 }
 function _createCurveFields(type, CURVE, curveOpts = {}, FpFnLE) {
@@ -6389,7 +6389,7 @@ function _weierstrass_legacy_opts_to_new(c2) {
   };
   const Fp3 = c2.Fp;
   let allowedLengths = c2.allowedPrivateKeyLengths ? Array.from(new Set(c2.allowedPrivateKeyLengths.map((l2) => Math.ceil(l2 / 2)))) : void 0;
-  const Fn = Field(CURVE.n, {
+  const Fn = Field$1(CURVE.n, {
     BITS: c2.nBitLength,
     allowedLengths,
     modFromBytes: c2.wrapPrivateKey
@@ -7446,7 +7446,7 @@ class _Field12 {
   }
 }
 function tower12(opts) {
-  const Fp3 = Field(opts.ORDER);
+  const Fp3 = Field$1(opts.ORDER);
   const Fp22 = new _Field2(Fp3, opts);
   const Fp62 = new _Field6(Fp22);
   const Fp122 = new _Field12(Fp62, opts);
@@ -7465,7 +7465,7 @@ const bls12_381_CURVE_G1 = {
   Gx: BigInt("0x17f1d3a73197d7942695638c4fa9ac0fc3688c4f9774b905a14e3a3f171bac586c55e83ff97a1aeffb3af00adb22c6bb"),
   Gy: BigInt("0x08b3f481e3aaa0f1a09e30ed741d8ae4fcf5e095d5d00af600db18cb2c04b3edd03cc744a2888ae40caa232946c5e7e1")
 };
-const bls12_381_Fr = Field(bls12_381_CURVE_G1.n, {
+const bls12_381_Fr = Field$1(bls12_381_CURVE_G1.n, {
   modFromBytes: true,
   isLE: true
 });
@@ -9261,7 +9261,7 @@ function _eddsa_legacy_opts_to_new(c2) {
     Gy: c2.Gy
   };
   const Fp3 = c2.Fp;
-  const Fn = Field(CURVE.n, c2.nBitLength, true);
+  const Fn = Field$1(CURVE.n, c2.nBitLength, true);
   const curveOpts = { Fp: Fp3, Fn, uvRatio: c2.uvRatio };
   const eddsaOpts = {
     randomBytes: c2.randomBytes,
@@ -9346,7 +9346,7 @@ function uvRatio(u2, v2) {
     x2 = mod(-x2, P2);
   return { isValid: useRoot1 || useRoot2, value: x2 };
 }
-const Fp = /* @__PURE__ */ (() => Field(ed25519_CURVE.p, { isLE: true }))();
+const Fp = /* @__PURE__ */ (() => Field$1(ed25519_CURVE.p, { isLE: true }))();
 const ed25519Defaults = /* @__PURE__ */ (() => ({
   ...ed25519_CURVE,
   Fp,
@@ -16835,8 +16835,8 @@ class AuthClient {
     const expiration = getExpirationFlag();
     if (expiration === null)
       return false;
-    const nowNs = BigInt(Date.now()) * BigInt(1e6);
-    return nowNs < expiration;
+    const nowNs2 = BigInt(Date.now()) * BigInt(1e6);
+    return nowNs2 < expiration;
   }
   /**
    * Opens the identity provider, requests a delegation, and returns the authenticated identity.
@@ -31700,110 +31700,299 @@ function Textarea({ className, ...props }) {
   );
 }
 const Error$1 = Variant({
-  "FrontendOriginsNotConfigured": Null,
-  "MixedSsoSources": Record({
-    "otherKeys": Vec(Text),
-    "ssoKeys": Vec(Text)
+  FrontendOriginsNotConfigured: Null,
+  MixedSsoSources: Record({
+    otherKeys: Vec(Text),
+    ssoKeys: Vec(Text)
   }),
-  "Stale": Record({ "ageNs": Nat }),
-  "MalformedCandid": Null,
-  "AmbiguousAttribute": Record({
-    "field": Text,
-    "sources": Vec(Text)
+  Stale: Record({ ageNs: Nat }),
+  MalformedCandid: Null,
+  AmbiguousAttribute: Record({
+    field: Text,
+    sources: Vec(Text)
   }),
-  "NoAttributes": Null,
-  "UnknownNonce": Null,
-  "UntrustedSsoSource": Record({ "domain": Text }),
-  "MissingField": Text,
-  "FrontendOriginMismatch": Record({
-    "got": Text,
-    "expected": Vec(Text)
+  NoAttributes: Null,
+  UnknownNonce: Null,
+  UntrustedSsoSource: Record({ domain: Text }),
+  MissingField: Text,
+  FrontendOriginMismatch: Record({
+    got: Text,
+    expected: Vec(Text)
   })
 });
-const Result = Variant({ "ok": Null, "err": Error$1 });
+const Result = Variant({ ok: Null, err: Error$1 });
 const UserRole = Variant({
-  "admin": Null,
-  "user": Null,
-  "guest": Null
+  admin: Null,
+  user: Null,
+  guest: Null
 });
-const GeneratedAnswer = Record({
-  "id": Nat,
-  "question": Text,
-  "createdAt": Int,
-  "answer": Text
+const ProfileIdentity = Record({
+  email: Text,
+  fullName: Text,
+  linkedin: Text,
+  location: Text,
+  phone: Text,
+  portfolio: Text
 });
-const Profile = Record({ "text": Text, "updatedAt": Int });
+const WorkExperience = Record({
+  company: Text,
+  endDate: Text,
+  highlights: Vec(Text),
+  startDate: Text,
+  title: Text
+});
+const Project = Record({
+  highlights: Vec(Text),
+  name: Text,
+  summary: Text,
+  url: Text
+});
+const LivingProfile = Record({
+  education: Vec(Text),
+  experience: Vec(WorkExperience),
+  headline: Text,
+  identity: ProfileIdentity,
+  preferences: Vec(Text),
+  projects: Vec(Project),
+  skills: Vec(Text),
+  summary: Text,
+  updatedAt: Int
+});
+const AnswerBankEntry = Record({
+  answer: Text,
+  id: Nat,
+  kind: Text,
+  prompt: Text,
+  sensitive: Bool,
+  updatedAt: Int
+});
+const ApplicationRecord = Record({
+  company: Text,
+  createdAt: Int,
+  id: Nat,
+  platform: Text,
+  status: Text,
+  title: Text,
+  updatedAt: Int,
+  url: Text,
+  usedAnswerIds: Vec(Nat)
+});
+const DraftJobContext = Record({
+  company: Text,
+  description: Text,
+  title: Text
+});
+const DetectedField = Record({
+  ariaLabel: Text,
+  fieldType: Text,
+  id: Text,
+  label: Text,
+  name: Text,
+  placeholder: Text,
+  tagName: Text
+});
+const DraftRequest = Record({
+  fields: Vec(DetectedField),
+  job: DraftJobContext,
+  mode: Text,
+  pageTitle: Text,
+  platform: Text,
+  url: Text
+});
+const FieldSuggestion = Record({
+  confidence: Nat,
+  fieldId: Text,
+  kind: Text,
+  label: Text,
+  requiresReview: Bool,
+  source: Text,
+  value: Text
+});
+const DraftResponse = Record({
+  createdAt: Int,
+  id: Nat,
+  mode: Text,
+  platform: Text,
+  suggestions: Vec(FieldSuggestion),
+  url: Text
+});
 Service({
-  "__accessControlState": Func([], [Reserved], ["query"]),
-  "__answersState": Func([], [Reserved], ["query"]),
-  "__profileState": Func([], [Reserved], ["query"]),
-  "_initialize_access_control": Func([], [], []),
-  "_internet_identity_sign_in_finish": Func([], [Result], []),
-  "_internet_identity_sign_in_start": Func([], [Vec(Nat8)], []),
-  "assignCallerUserRole": Func([Principal2, UserRole], [], []),
-  "generateAnswer": Func([Text], [GeneratedAnswer], []),
-  "getCallerUserRole": Func([], [UserRole], ["query"]),
-  "getProfile": Func([], [Opt(Profile)], ["query"]),
-  "getProfileCharCount": Func([], [Nat], ["query"]),
-  "isCallerAdmin": Func([], [Bool], ["query"]),
-  "recentAnswers": Func([], [Vec(GeneratedAnswer)], ["query"]),
-  "saveProfile": Func([Text], [], [])
+  __accessControlState: Func([], [Reserved], ["query"]),
+  __answersState: Func([], [Reserved], ["query"]),
+  __applicationsState: Func([], [Reserved], ["query"]),
+  __draftsState: Func([], [Reserved], ["query"]),
+  __profileState: Func([], [Reserved], ["query"]),
+  _initialize_access_control: Func([], [], []),
+  _internet_identity_sign_in_finish: Func([], [Result], []),
+  _internet_identity_sign_in_start: Func([], [Vec(Nat8)], []),
+  assignCallerUserRole: Func([Principal2, UserRole], [], []),
+  createApplication: Func(
+    [Text, Text, Text, Text, Text, Vec(Nat)],
+    [ApplicationRecord],
+    []
+  ),
+  createDraft: Func([DraftRequest], [DraftResponse], []),
+  getCallerUserRole: Func([], [UserRole], ["query"]),
+  getExtensionContractVersion: Func([], [Text], ["query"]),
+  getProfile: Func([], [Opt(LivingProfile)], ["query"]),
+  isCallerAdmin: Func([], [Bool], ["query"]),
+  listAnswers: Func([], [Vec(AnswerBankEntry)], ["query"]),
+  listApplications: Func([], [Vec(ApplicationRecord)], ["query"]),
+  recentDrafts: Func([], [Vec(DraftResponse)], ["query"]),
+  saveAnswer: Func([Text, Text, Text, Bool], [AnswerBankEntry], []),
+  saveProfile: Func([LivingProfile], [LivingProfile], [])
 });
 const idlFactory = ({ IDL: IDL2 }) => {
   const Error2 = IDL2.Variant({
-    "FrontendOriginsNotConfigured": IDL2.Null,
-    "MixedSsoSources": IDL2.Record({
-      "otherKeys": IDL2.Vec(IDL2.Text),
-      "ssoKeys": IDL2.Vec(IDL2.Text)
+    FrontendOriginsNotConfigured: IDL2.Null,
+    MixedSsoSources: IDL2.Record({
+      otherKeys: IDL2.Vec(IDL2.Text),
+      ssoKeys: IDL2.Vec(IDL2.Text)
     }),
-    "Stale": IDL2.Record({ "ageNs": IDL2.Nat }),
-    "MalformedCandid": IDL2.Null,
-    "AmbiguousAttribute": IDL2.Record({
-      "field": IDL2.Text,
-      "sources": IDL2.Vec(IDL2.Text)
+    Stale: IDL2.Record({ ageNs: IDL2.Nat }),
+    MalformedCandid: IDL2.Null,
+    AmbiguousAttribute: IDL2.Record({
+      field: IDL2.Text,
+      sources: IDL2.Vec(IDL2.Text)
     }),
-    "NoAttributes": IDL2.Null,
-    "UnknownNonce": IDL2.Null,
-    "UntrustedSsoSource": IDL2.Record({ "domain": IDL2.Text }),
-    "MissingField": IDL2.Text,
-    "FrontendOriginMismatch": IDL2.Record({
-      "got": IDL2.Text,
-      "expected": IDL2.Vec(IDL2.Text)
+    NoAttributes: IDL2.Null,
+    UnknownNonce: IDL2.Null,
+    UntrustedSsoSource: IDL2.Record({ domain: IDL2.Text }),
+    MissingField: IDL2.Text,
+    FrontendOriginMismatch: IDL2.Record({
+      got: IDL2.Text,
+      expected: IDL2.Vec(IDL2.Text)
     })
   });
-  const Result2 = IDL2.Variant({ "ok": IDL2.Null, "err": Error2 });
+  const Result2 = IDL2.Variant({ ok: IDL2.Null, err: Error2 });
   const UserRole2 = IDL2.Variant({
-    "admin": IDL2.Null,
-    "user": IDL2.Null,
-    "guest": IDL2.Null
+    admin: IDL2.Null,
+    user: IDL2.Null,
+    guest: IDL2.Null
   });
-  const GeneratedAnswer2 = IDL2.Record({
-    "id": IDL2.Nat,
-    "question": IDL2.Text,
-    "createdAt": IDL2.Int,
-    "answer": IDL2.Text
+  const ProfileIdentity2 = IDL2.Record({
+    email: IDL2.Text,
+    fullName: IDL2.Text,
+    linkedin: IDL2.Text,
+    location: IDL2.Text,
+    phone: IDL2.Text,
+    portfolio: IDL2.Text
   });
-  const Profile2 = IDL2.Record({ "text": IDL2.Text, "updatedAt": IDL2.Int });
+  const WorkExperience2 = IDL2.Record({
+    company: IDL2.Text,
+    endDate: IDL2.Text,
+    highlights: IDL2.Vec(IDL2.Text),
+    startDate: IDL2.Text,
+    title: IDL2.Text
+  });
+  const Project2 = IDL2.Record({
+    highlights: IDL2.Vec(IDL2.Text),
+    name: IDL2.Text,
+    summary: IDL2.Text,
+    url: IDL2.Text
+  });
+  const LivingProfile2 = IDL2.Record({
+    education: IDL2.Vec(IDL2.Text),
+    experience: IDL2.Vec(WorkExperience2),
+    headline: IDL2.Text,
+    identity: ProfileIdentity2,
+    preferences: IDL2.Vec(IDL2.Text),
+    projects: IDL2.Vec(Project2),
+    skills: IDL2.Vec(IDL2.Text),
+    summary: IDL2.Text,
+    updatedAt: IDL2.Int
+  });
+  const AnswerBankEntry2 = IDL2.Record({
+    answer: IDL2.Text,
+    id: IDL2.Nat,
+    kind: IDL2.Text,
+    prompt: IDL2.Text,
+    sensitive: IDL2.Bool,
+    updatedAt: IDL2.Int
+  });
+  const ApplicationRecord2 = IDL2.Record({
+    company: IDL2.Text,
+    createdAt: IDL2.Int,
+    id: IDL2.Nat,
+    platform: IDL2.Text,
+    status: IDL2.Text,
+    title: IDL2.Text,
+    updatedAt: IDL2.Int,
+    url: IDL2.Text,
+    usedAnswerIds: IDL2.Vec(IDL2.Nat)
+  });
+  const DraftJobContext2 = IDL2.Record({
+    company: IDL2.Text,
+    description: IDL2.Text,
+    title: IDL2.Text
+  });
+  const DetectedField2 = IDL2.Record({
+    ariaLabel: IDL2.Text,
+    fieldType: IDL2.Text,
+    id: IDL2.Text,
+    label: IDL2.Text,
+    name: IDL2.Text,
+    placeholder: IDL2.Text,
+    tagName: IDL2.Text
+  });
+  const DraftRequest2 = IDL2.Record({
+    fields: IDL2.Vec(DetectedField2),
+    job: DraftJobContext2,
+    mode: IDL2.Text,
+    pageTitle: IDL2.Text,
+    platform: IDL2.Text,
+    url: IDL2.Text
+  });
+  const FieldSuggestion2 = IDL2.Record({
+    confidence: IDL2.Nat,
+    fieldId: IDL2.Text,
+    kind: IDL2.Text,
+    label: IDL2.Text,
+    requiresReview: IDL2.Bool,
+    source: IDL2.Text,
+    value: IDL2.Text
+  });
+  const DraftResponse2 = IDL2.Record({
+    createdAt: IDL2.Int,
+    id: IDL2.Nat,
+    mode: IDL2.Text,
+    platform: IDL2.Text,
+    suggestions: IDL2.Vec(FieldSuggestion2),
+    url: IDL2.Text
+  });
   return IDL2.Service({
-    "__accessControlState": IDL2.Func([], [IDL2.Reserved], ["query"]),
-    "__answersState": IDL2.Func([], [IDL2.Reserved], ["query"]),
-    "__profileState": IDL2.Func([], [IDL2.Reserved], ["query"]),
-    "_initialize_access_control": IDL2.Func([], [], []),
-    "_internet_identity_sign_in_finish": IDL2.Func([], [Result2], []),
-    "_internet_identity_sign_in_start": IDL2.Func([], [IDL2.Vec(IDL2.Nat8)], []),
-    "assignCallerUserRole": IDL2.Func([IDL2.Principal, UserRole2], [], []),
-    "generateAnswer": IDL2.Func([IDL2.Text], [GeneratedAnswer2], []),
-    "getCallerUserRole": IDL2.Func([], [UserRole2], ["query"]),
-    "getProfile": IDL2.Func([], [IDL2.Opt(Profile2)], ["query"]),
-    "getProfileCharCount": IDL2.Func([], [IDL2.Nat], ["query"]),
-    "isCallerAdmin": IDL2.Func([], [IDL2.Bool], ["query"]),
-    "recentAnswers": IDL2.Func([], [IDL2.Vec(GeneratedAnswer2)], ["query"]),
-    "saveProfile": IDL2.Func([IDL2.Text], [], [])
+    __accessControlState: IDL2.Func([], [IDL2.Reserved], ["query"]),
+    __answersState: IDL2.Func([], [IDL2.Reserved], ["query"]),
+    __applicationsState: IDL2.Func([], [IDL2.Reserved], ["query"]),
+    __draftsState: IDL2.Func([], [IDL2.Reserved], ["query"]),
+    __profileState: IDL2.Func([], [IDL2.Reserved], ["query"]),
+    _initialize_access_control: IDL2.Func([], [], []),
+    _internet_identity_sign_in_finish: IDL2.Func([], [Result2], []),
+    _internet_identity_sign_in_start: IDL2.Func([], [IDL2.Vec(IDL2.Nat8)], []),
+    assignCallerUserRole: IDL2.Func([IDL2.Principal, UserRole2], [], []),
+    createApplication: IDL2.Func(
+      [IDL2.Text, IDL2.Text, IDL2.Text, IDL2.Text, IDL2.Text, IDL2.Vec(IDL2.Nat)],
+      [ApplicationRecord2],
+      []
+    ),
+    createDraft: IDL2.Func([DraftRequest2], [DraftResponse2], []),
+    getCallerUserRole: IDL2.Func([], [UserRole2], ["query"]),
+    getExtensionContractVersion: IDL2.Func([], [IDL2.Text], ["query"]),
+    getProfile: IDL2.Func([], [IDL2.Opt(LivingProfile2)], ["query"]),
+    isCallerAdmin: IDL2.Func([], [IDL2.Bool], ["query"]),
+    listAnswers: IDL2.Func([], [IDL2.Vec(AnswerBankEntry2)], ["query"]),
+    listApplications: IDL2.Func([], [IDL2.Vec(ApplicationRecord2)], ["query"]),
+    recentDrafts: IDL2.Func([], [IDL2.Vec(DraftResponse2)], ["query"]),
+    saveAnswer: IDL2.Func([IDL2.Text, IDL2.Text, IDL2.Text, IDL2.Bool], [AnswerBankEntry2], []),
+    saveProfile: IDL2.Func([LivingProfile2], [LivingProfile2], [])
   });
 };
 new TextEncoder().encode("icfs-chunk/");
 new TextEncoder().encode("icfs-metadata/");
 new TextEncoder().encode("ynode/");
+const fromCandidRole = (value) => "admin" in value ? "admin" : "user" in value ? "user" : "guest";
+const toCandidRole = (value) => value === "admin" ? { admin: null } : value === "user" ? { user: null } : { guest: null };
+const unwrapOpt = (value) => value.length === 0 ? null : value[0];
 class Backend {
   constructor(actor, _uploadFile, _downloadFile, processError2) {
     this.actor = actor;
@@ -31811,278 +32000,82 @@ class Backend {
     this._downloadFile = _downloadFile;
     this.processError = processError2;
   }
-  async __accessControlState() {
-    if (this.processError) {
-      try {
-        const result = await this.actor.__accessControlState();
-        return result;
-      } catch (e) {
-        this.processError(e);
-        throw new Error("unreachable");
-      }
-    } else {
-      const result = await this.actor.__accessControlState();
-      return result;
+  async call(fn) {
+    if (!this.processError) return fn();
+    try {
+      return await fn();
+    } catch (error) {
+      this.processError(error);
+      throw new Error("unreachable");
     }
   }
-  async __answersState() {
-    if (this.processError) {
-      try {
-        const result = await this.actor.__answersState();
-        return result;
-      } catch (e) {
-        this.processError(e);
-        throw new Error("unreachable");
-      }
-    } else {
-      const result = await this.actor.__answersState();
-      return result;
-    }
+  __accessControlState() {
+    return this.call(() => this.actor.__accessControlState());
   }
-  async __profileState() {
-    if (this.processError) {
-      try {
-        const result = await this.actor.__profileState();
-        return result;
-      } catch (e) {
-        this.processError(e);
-        throw new Error("unreachable");
-      }
-    } else {
-      const result = await this.actor.__profileState();
-      return result;
-    }
+  __answersState() {
+    return this.call(() => this.actor.__answersState());
   }
-  async _initialize_access_control() {
-    if (this.processError) {
-      try {
-        const result = await this.actor._initialize_access_control();
-        return result;
-      } catch (e) {
-        this.processError(e);
-        throw new Error("unreachable");
-      }
-    } else {
-      const result = await this.actor._initialize_access_control();
-      return result;
-    }
+  __applicationsState() {
+    return this.call(() => this.actor.__applicationsState());
   }
-  async _internet_identity_sign_in_finish() {
-    if (this.processError) {
-      try {
-        const result = await this.actor._internet_identity_sign_in_finish();
-        return from_candid_Result_n1(this._uploadFile, this._downloadFile, result);
-      } catch (e) {
-        this.processError(e);
-        throw new Error("unreachable");
-      }
-    } else {
-      const result = await this.actor._internet_identity_sign_in_finish();
-      return from_candid_Result_n1(this._uploadFile, this._downloadFile, result);
-    }
+  __draftsState() {
+    return this.call(() => this.actor.__draftsState());
   }
-  async _internet_identity_sign_in_start() {
-    if (this.processError) {
-      try {
-        const result = await this.actor._internet_identity_sign_in_start();
-        return result;
-      } catch (e) {
-        this.processError(e);
-        throw new Error("unreachable");
-      }
-    } else {
-      const result = await this.actor._internet_identity_sign_in_start();
-      return result;
-    }
+  __profileState() {
+    return this.call(() => this.actor.__profileState());
   }
-  async assignCallerUserRole(arg0, arg1) {
-    if (this.processError) {
-      try {
-        const result = await this.actor.assignCallerUserRole(arg0, to_candid_UserRole_n5(this._uploadFile, this._downloadFile, arg1));
-        return result;
-      } catch (e) {
-        this.processError(e);
-        throw new Error("unreachable");
-      }
-    } else {
-      const result = await this.actor.assignCallerUserRole(arg0, to_candid_UserRole_n5(this._uploadFile, this._downloadFile, arg1));
-      return result;
-    }
+  _initialize_access_control() {
+    return this.call(() => this.actor._initialize_access_control());
   }
-  async generateAnswer(arg0) {
-    if (this.processError) {
-      try {
-        const result = await this.actor.generateAnswer(arg0);
-        return result;
-      } catch (e) {
-        this.processError(e);
-        throw new Error("unreachable");
-      }
-    } else {
-      const result = await this.actor.generateAnswer(arg0);
-      return result;
-    }
+  _internet_identity_sign_in_finish() {
+    return this.call(() => this.actor._internet_identity_sign_in_finish());
+  }
+  _internet_identity_sign_in_start() {
+    return this.call(() => this.actor._internet_identity_sign_in_start());
+  }
+  assignCallerUserRole(user, role) {
+    return this.call(() => this.actor.assignCallerUserRole(user, toCandidRole(role)));
+  }
+  createApplication(company, title, url, platform, status, usedAnswerIds) {
+    return this.call(
+      () => this.actor.createApplication(company, title, url, platform, status, usedAnswerIds)
+    );
+  }
+  createDraft(request2) {
+    return this.call(() => this.actor.createDraft(request2));
   }
   async getCallerUserRole() {
-    if (this.processError) {
-      try {
-        const result = await this.actor.getCallerUserRole();
-        return from_candid_UserRole_n7(this._uploadFile, this._downloadFile, result);
-      } catch (e) {
-        this.processError(e);
-        throw new Error("unreachable");
-      }
-    } else {
-      const result = await this.actor.getCallerUserRole();
-      return from_candid_UserRole_n7(this._uploadFile, this._downloadFile, result);
-    }
+    return fromCandidRole(await this.call(() => this.actor.getCallerUserRole()));
+  }
+  getExtensionContractVersion() {
+    return this.call(() => this.actor.getExtensionContractVersion());
   }
   async getProfile() {
-    if (this.processError) {
-      try {
-        const result = await this.actor.getProfile();
-        return from_candid_opt_n9(this._uploadFile, this._downloadFile, result);
-      } catch (e) {
-        this.processError(e);
-        throw new Error("unreachable");
-      }
-    } else {
-      const result = await this.actor.getProfile();
-      return from_candid_opt_n9(this._uploadFile, this._downloadFile, result);
-    }
+    return unwrapOpt(await this.call(() => this.actor.getProfile()));
   }
-  async getProfileCharCount() {
-    if (this.processError) {
-      try {
-        const result = await this.actor.getProfileCharCount();
-        return result;
-      } catch (e) {
-        this.processError(e);
-        throw new Error("unreachable");
-      }
-    } else {
-      const result = await this.actor.getProfileCharCount();
-      return result;
-    }
+  isCallerAdmin() {
+    return this.call(() => this.actor.isCallerAdmin());
   }
-  async isCallerAdmin() {
-    if (this.processError) {
-      try {
-        const result = await this.actor.isCallerAdmin();
-        return result;
-      } catch (e) {
-        this.processError(e);
-        throw new Error("unreachable");
-      }
-    } else {
-      const result = await this.actor.isCallerAdmin();
-      return result;
-    }
+  listAnswers() {
+    return this.call(() => this.actor.listAnswers());
   }
-  async recentAnswers() {
-    if (this.processError) {
-      try {
-        const result = await this.actor.recentAnswers();
-        return result;
-      } catch (e) {
-        this.processError(e);
-        throw new Error("unreachable");
-      }
-    } else {
-      const result = await this.actor.recentAnswers();
-      return result;
-    }
+  listApplications() {
+    return this.call(() => this.actor.listApplications());
   }
-  async saveProfile(arg0) {
-    if (this.processError) {
-      try {
-        const result = await this.actor.saveProfile(arg0);
-        return result;
-      } catch (e) {
-        this.processError(e);
-        throw new Error("unreachable");
-      }
-    } else {
-      const result = await this.actor.saveProfile(arg0);
-      return result;
-    }
+  recentDrafts() {
+    return this.call(() => this.actor.recentDrafts());
   }
-}
-function from_candid_Error_n3(_uploadFile, _downloadFile, value) {
-  return from_candid_variant_n4(_uploadFile, _downloadFile, value);
-}
-function from_candid_Result_n1(_uploadFile, _downloadFile, value) {
-  return from_candid_variant_n2(_uploadFile, _downloadFile, value);
-}
-function from_candid_UserRole_n7(_uploadFile, _downloadFile, value) {
-  return from_candid_variant_n8(_uploadFile, _downloadFile, value);
-}
-function from_candid_opt_n9(_uploadFile, _downloadFile, value) {
-  return value.length === 0 ? null : value[0];
-}
-function from_candid_variant_n2(_uploadFile, _downloadFile, value) {
-  return "ok" in value ? {
-    __kind__: "ok",
-    ok: value.ok
-  } : "err" in value ? {
-    __kind__: "err",
-    err: from_candid_Error_n3(_uploadFile, _downloadFile, value.err)
-  } : value;
-}
-function from_candid_variant_n4(_uploadFile, _downloadFile, value) {
-  return "FrontendOriginsNotConfigured" in value ? {
-    __kind__: "FrontendOriginsNotConfigured",
-    FrontendOriginsNotConfigured: value.FrontendOriginsNotConfigured
-  } : "MixedSsoSources" in value ? {
-    __kind__: "MixedSsoSources",
-    MixedSsoSources: value.MixedSsoSources
-  } : "Stale" in value ? {
-    __kind__: "Stale",
-    Stale: value.Stale
-  } : "MalformedCandid" in value ? {
-    __kind__: "MalformedCandid",
-    MalformedCandid: value.MalformedCandid
-  } : "AmbiguousAttribute" in value ? {
-    __kind__: "AmbiguousAttribute",
-    AmbiguousAttribute: value.AmbiguousAttribute
-  } : "NoAttributes" in value ? {
-    __kind__: "NoAttributes",
-    NoAttributes: value.NoAttributes
-  } : "UnknownNonce" in value ? {
-    __kind__: "UnknownNonce",
-    UnknownNonce: value.UnknownNonce
-  } : "UntrustedSsoSource" in value ? {
-    __kind__: "UntrustedSsoSource",
-    UntrustedSsoSource: value.UntrustedSsoSource
-  } : "MissingField" in value ? {
-    __kind__: "MissingField",
-    MissingField: value.MissingField
-  } : "FrontendOriginMismatch" in value ? {
-    __kind__: "FrontendOriginMismatch",
-    FrontendOriginMismatch: value.FrontendOriginMismatch
-  } : value;
-}
-function from_candid_variant_n8(_uploadFile, _downloadFile, value) {
-  return "admin" in value ? "admin" : "user" in value ? "user" : "guest" in value ? "guest" : value;
-}
-function to_candid_UserRole_n5(_uploadFile, _downloadFile, value) {
-  return to_candid_variant_n6(_uploadFile, _downloadFile, value);
-}
-function to_candid_variant_n6(_uploadFile, _downloadFile, value) {
-  return value == "admin" ? {
-    admin: null
-  } : value == "user" ? {
-    user: null
-  } : value == "guest" ? {
-    guest: null
-  } : value;
+  saveAnswer(kind, prompt, answer, sensitive) {
+    return this.call(() => this.actor.saveAnswer(kind, prompt, answer, sensitive));
+  }
+  saveProfile(profile) {
+    return this.call(() => this.actor.saveProfile(profile));
+  }
 }
 function createActor(canisterId, _uploadFile, _downloadFile, options = {}) {
-  const agent = options.agent || HttpAgent.createSync({
-    ...options.agentOptions
-  });
+  const agent = options.agent || HttpAgent.createSync({ ...options.agentOptions });
   if (options.agent && options.agentOptions) {
-    console.warn("Detected both agent and agentOptions passed to createActor. Ignoring agentOptions and proceeding with the provided agent.");
+    console.warn("Detected both agent and agentOptions passed to createActor. Ignoring agentOptions.");
   }
   const actor = Actor.createActor(idlFactory, {
     agent,
@@ -32106,35 +32099,84 @@ function useSaveProfile() {
   const { actor } = useActor(createActor);
   const qc = useQueryClient();
   return useMutation({
-    mutationFn: async (text) => {
+    mutationFn: async (profile) => {
       if (!actor) throw new Error("Actor not ready");
-      await actor.saveProfile(text);
+      return actor.saveProfile(profile);
     },
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ["profile"] });
     }
   });
 }
-function useGenerateAnswer() {
+function useListAnswers() {
+  const { actor, isFetching } = useActor(createActor);
+  return useQuery({
+    queryKey: ["answers"],
+    queryFn: async () => {
+      if (!actor) return [];
+      return actor.listAnswers();
+    },
+    enabled: !!actor && !isFetching
+  });
+}
+function useSaveAnswer() {
   const { actor } = useActor(createActor);
   const qc = useQueryClient();
   return useMutation({
-    mutationFn: async (question) => {
+    mutationFn: async (input) => {
       if (!actor) throw new Error("Actor not ready");
-      return actor.generateAnswer(question);
+      return actor.saveAnswer(
+        input.kind,
+        input.prompt,
+        input.answer,
+        input.sensitive
+      );
     },
     onSuccess: () => {
-      qc.invalidateQueries({ queryKey: ["recentAnswers"] });
+      qc.invalidateQueries({ queryKey: ["answers"] });
     }
   });
 }
-function useRecentAnswers() {
+function useCreateDraft() {
+  const { actor } = useActor(createActor);
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: async (request2) => {
+      if (!actor) throw new Error("Actor not ready");
+      return actor.createDraft(request2);
+    },
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ["drafts"] });
+    }
+  });
+}
+function useCreateApplication() {
+  const { actor } = useActor(createActor);
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: async (input) => {
+      if (!actor) throw new Error("Actor not ready");
+      return actor.createApplication(
+        input.company,
+        input.title,
+        input.url,
+        input.platform,
+        input.status,
+        input.usedAnswerIds
+      );
+    },
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ["applications"] });
+    }
+  });
+}
+function useListApplications() {
   const { actor, isFetching } = useActor(createActor);
   return useQuery({
-    queryKey: ["recentAnswers"],
+    queryKey: ["applications"],
     queryFn: async () => {
       if (!actor) return [];
-      return actor.recentAnswers();
+      return actor.listApplications();
     },
     enabled: !!actor && !isFetching
   });
@@ -32244,8 +32286,25 @@ const createLucideIcon = (iconName, iconNode) => {
  * This source code is licensed under the ISC license.
  * See the LICENSE file in the root directory of this source tree.
  */
-const __iconNode$4 = [["path", { d: "M20 6 9 17l-5-5", key: "1gmf2c" }]];
-const Check = createLucideIcon("check", __iconNode$4);
+const __iconNode$5 = [
+  ["path", { d: "M12 12h.01", key: "1mp3jc" }],
+  ["path", { d: "M16 6V4a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2", key: "1ksdt3" }],
+  ["path", { d: "M22 13a18.15 18.15 0 0 1-20 0", key: "12hx5q" }],
+  ["rect", { width: "20", height: "14", x: "2", y: "6", rx: "2", key: "i6l2r4" }]
+];
+const BriefcaseBusiness = createLucideIcon("briefcase-business", __iconNode$5);
+/**
+ * @license lucide-react v0.511.0 - ISC
+ *
+ * This source code is licensed under the ISC license.
+ * See the LICENSE file in the root directory of this source tree.
+ */
+const __iconNode$4 = [
+  ["ellipse", { cx: "12", cy: "5", rx: "9", ry: "3", key: "msslwz" }],
+  ["path", { d: "M3 5V19A9 3 0 0 0 21 19V5", key: "1wlel7" }],
+  ["path", { d: "M3 12A9 3 0 0 0 21 12", key: "mv7ke4" }]
+];
+const Database = createLucideIcon("database", __iconNode$4);
 /**
  * @license lucide-react v0.511.0 - ISC
  *
@@ -32253,32 +32312,38 @@ const Check = createLucideIcon("check", __iconNode$4);
  * See the LICENSE file in the root directory of this source tree.
  */
 const __iconNode$3 = [
-  ["rect", { width: "14", height: "14", x: "8", y: "8", rx: "2", ry: "2", key: "17jyea" }],
-  ["path", { d: "M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2", key: "zix9uf" }]
-];
-const Copy = createLucideIcon("copy", __iconNode$3);
-/**
- * @license lucide-react v0.511.0 - ISC
- *
- * This source code is licensed under the ISC license.
- * See the LICENSE file in the root directory of this source tree.
- */
-const __iconNode$2 = [
   ["path", { d: "M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z", key: "1rqfz7" }],
   ["path", { d: "M14 2v4a2 2 0 0 0 2 2h4", key: "tnqrlb" }],
   ["path", { d: "M10 9H8", key: "b1mrlr" }],
   ["path", { d: "M16 13H8", key: "t4e002" }],
   ["path", { d: "M16 17H8", key: "z1uh3a" }]
 ];
-const FileText = createLucideIcon("file-text", __iconNode$2);
+const FileText = createLucideIcon("file-text", __iconNode$3);
 /**
  * @license lucide-react v0.511.0 - ISC
  *
  * This source code is licensed under the ISC license.
  * See the LICENSE file in the root directory of this source tree.
  */
-const __iconNode$1 = [["path", { d: "M21 12a9 9 0 1 1-6.219-8.56", key: "13zald" }]];
-const LoaderCircle = createLucideIcon("loader-circle", __iconNode$1);
+const __iconNode$2 = [["path", { d: "M21 12a9 9 0 1 1-6.219-8.56", key: "13zald" }]];
+const LoaderCircle = createLucideIcon("loader-circle", __iconNode$2);
+/**
+ * @license lucide-react v0.511.0 - ISC
+ *
+ * This source code is licensed under the ISC license.
+ * See the LICENSE file in the root directory of this source tree.
+ */
+const __iconNode$1 = [
+  [
+    "path",
+    { d: "M6.3 20.3a2.4 2.4 0 0 0 3.4 0L12 18l-6-6-2.3 2.3a2.4 2.4 0 0 0 0 3.4Z", key: "goz73y" }
+  ],
+  ["path", { d: "m2 22 3-3", key: "19mgm9" }],
+  ["path", { d: "M7.5 13.5 10 11", key: "7xgeeb" }],
+  ["path", { d: "M10.5 16.5 13 14", key: "10btkg" }],
+  ["path", { d: "m18 3-4 4h6l-4 4", key: "16psg9" }]
+];
+const PlugZap = createLucideIcon("plug-zap", __iconNode$1);
 /**
  * @license lucide-react v0.511.0 - ISC
  *
@@ -32289,16 +32354,13 @@ const __iconNode = [
   [
     "path",
     {
-      d: "M9.937 15.5A2 2 0 0 0 8.5 14.063l-6.135-1.582a.5.5 0 0 1 0-.962L8.5 9.936A2 2 0 0 0 9.937 8.5l1.582-6.135a.5.5 0 0 1 .963 0L14.063 8.5A2 2 0 0 0 15.5 9.937l6.135 1.581a.5.5 0 0 1 0 .964L15.5 14.063a2 2 0 0 0-1.437 1.437l-1.582 6.135a.5.5 0 0 1-.963 0z",
-      key: "4pj2yx"
+      d: "M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z",
+      key: "oel41y"
     }
   ],
-  ["path", { d: "M20 3v4", key: "1olli1" }],
-  ["path", { d: "M22 5h-4", key: "1gvqau" }],
-  ["path", { d: "M4 17v2", key: "vumght" }],
-  ["path", { d: "M5 18H3", key: "zchphs" }]
+  ["path", { d: "m9 12 2 2 4-4", key: "dzmm74" }]
 ];
-const Sparkles = createLucideIcon("sparkles", __iconNode);
+const ShieldCheck = createLucideIcon("shield-check", __iconNode);
 const LayoutGroupContext = reactExports.createContext({});
 function useConstant(init) {
   const ref = reactExports.useRef(null);
@@ -40445,259 +40507,566 @@ reactExports.forwardRef(function(e, t) {
     })) : null;
   }));
 });
-function formatTimestamp(ns) {
-  const ms = Number(ns / 1000000n);
-  const d2 = new Date(ms);
-  const now2 = Date.now();
-  const diff = now2 - ms;
-  const min = Math.floor(diff / 6e4);
-  if (min < 1) return "just now";
-  if (min < 60) return `${min}m ago`;
-  const hr = Math.floor(min / 60);
-  if (hr < 24) return `${hr}h ago`;
-  return d2.toLocaleDateString(void 0, { month: "short", day: "numeric" });
+const splitLines = (value) => value.split("\n").map((item) => item.trim()).filter(Boolean);
+const joinLines = (value) => value.join("\n");
+const nowNs = () => BigInt(Date.now()) * 1000000n;
+const emptyProfile = () => ({
+  identity: {
+    fullName: "",
+    email: "",
+    phone: "",
+    location: "",
+    linkedin: "",
+    portfolio: ""
+  },
+  headline: "",
+  summary: "",
+  skills: [],
+  experience: [],
+  projects: [],
+  education: [],
+  preferences: [],
+  updatedAt: nowNs()
+});
+function formatTime(ns) {
+  if (ns === 0n) return "not saved";
+  return new Date(Number(ns / 1000000n)).toLocaleString();
 }
-function CopyButton({ text, ocid }) {
-  const [copied, setCopied] = reactExports.useState(false);
-  const handle = async () => {
-    try {
-      await navigator.clipboard.writeText(text);
-      setCopied(true);
-      ue.success("Copied to clipboard");
-      setTimeout(() => setCopied(false), 1800);
-    } catch {
-      ue.error("Could not copy");
-    }
-  };
-  return /* @__PURE__ */ jsxRuntimeExports.jsxs(
-    Button,
-    {
-      variant: "outline",
-      size: "sm",
-      onClick: handle,
-      "data-ocid": ocid,
-      className: "gap-1.5 transition-smooth",
-      children: [
-        copied ? /* @__PURE__ */ jsxRuntimeExports.jsx(Check, { className: "h-3.5 w-3.5 text-primary" }) : /* @__PURE__ */ jsxRuntimeExports.jsx(Copy, { className: "h-3.5 w-3.5" }),
-        copied ? "Copied" : "Copy"
-      ]
-    }
-  );
+function Field({
+  label,
+  value,
+  onChange,
+  placeholder
+}) {
+  return /* @__PURE__ */ jsxRuntimeExports.jsxs("label", { className: "grid gap-1.5 text-sm font-medium", children: [
+    /* @__PURE__ */ jsxRuntimeExports.jsx("span", { children: label }),
+    /* @__PURE__ */ jsxRuntimeExports.jsx(
+      "input",
+      {
+        value,
+        onChange: (event) => onChange(event.target.value),
+        placeholder,
+        className: "min-h-10 rounded-md border border-input bg-background px-3 py-2 text-sm outline-none transition-smooth focus-visible:ring-2 focus-visible:ring-ring"
+      }
+    )
+  ] });
 }
-function ProfilePanel() {
-  const { data: profile, isLoading } = useGetProfile();
+function TextAreaField({
+  label,
+  value,
+  onChange,
+  placeholder,
+  rows = 5
+}) {
+  const id2 = reactExports.useId();
+  return /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "grid gap-1.5 text-sm font-medium", children: [
+    /* @__PURE__ */ jsxRuntimeExports.jsx("label", { htmlFor: id2, children: label }),
+    /* @__PURE__ */ jsxRuntimeExports.jsx(
+      Textarea,
+      {
+        id: id2,
+        value,
+        onChange: (event) => onChange(event.target.value),
+        placeholder,
+        rows,
+        className: "resize-y text-sm leading-relaxed"
+      }
+    )
+  ] });
+}
+function ProfileWorkspace() {
+  const { data, isLoading } = useGetProfile();
   const saveProfile = useSaveProfile();
-  const [text, setText] = reactExports.useState("");
+  const [profile, setProfile] = reactExports.useState(emptyProfile);
+  const [skillsText, setSkillsText] = reactExports.useState("");
+  const [educationText, setEducationText] = reactExports.useState("");
+  const [preferencesText, setPreferencesText] = reactExports.useState("");
   const [dirty, setDirty] = reactExports.useState(false);
   reactExports.useEffect(() => {
-    if (profile && !dirty && profile.text) {
-      setText(profile.text);
-    }
-  }, [profile, dirty]);
-  const charCount = text.length;
-  const hasProfile = !!(profile == null ? void 0 : profile.text);
+    if (!data || dirty) return;
+    setProfile(data);
+    setSkillsText(joinLines(data.skills));
+    setEducationText(joinLines(data.education));
+    setPreferencesText(joinLines(data.preferences));
+  }, [data, dirty]);
+  const updateProfile = (next) => {
+    setProfile(next);
+    setDirty(true);
+  };
   const handleSave = () => {
-    saveProfile.mutate(text, {
-      onSuccess: () => {
+    const payload = {
+      ...profile,
+      skills: splitLines(skillsText),
+      education: splitLines(educationText),
+      preferences: splitLines(preferencesText),
+      updatedAt: nowNs()
+    };
+    saveProfile.mutate(payload, {
+      onSuccess: (saved) => {
+        setProfile(saved);
         setDirty(false);
-        ue.success("Profile saved");
+        ue.success("Living resume saved");
       },
-      onError: () => ue.error("Could not save profile")
+      onError: () => ue.error("Could not save living resume")
     });
   };
-  return /* @__PURE__ */ jsxRuntimeExports.jsxs(Card, { className: "bg-card border-border shadow-subtle h-full", children: [
-    /* @__PURE__ */ jsxRuntimeExports.jsx(CardHeader, { className: "pb-3", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center justify-between gap-3", children: [
+  return /* @__PURE__ */ jsxRuntimeExports.jsxs(Card, { className: "border-border bg-card shadow-subtle", children: [
+    /* @__PURE__ */ jsxRuntimeExports.jsx(CardHeader, { className: "pb-3", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-start justify-between gap-3", children: [
       /* @__PURE__ */ jsxRuntimeExports.jsxs(CardTitle, { className: "flex items-center gap-2 text-base", children: [
         /* @__PURE__ */ jsxRuntimeExports.jsx(FileText, { className: "h-4 w-4 text-primary" }),
-        "Your profile"
+        "Living resume"
       ] }),
-      hasProfile && !dirty && /* @__PURE__ */ jsxRuntimeExports.jsx(Badge, { variant: "secondary", className: "font-normal", children: "Saved" })
+      /* @__PURE__ */ jsxRuntimeExports.jsx(Badge, { variant: "secondary", className: "font-normal", children: dirty ? "Unsaved" : `Updated ${formatTime(profile.updatedAt)}` })
     ] }) }),
-    /* @__PURE__ */ jsxRuntimeExports.jsxs(CardContent, { className: "flex flex-col gap-3", children: [
-      /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-xs text-muted-foreground leading-relaxed", children: "Paste your resume or professional profile once. We'll draw every answer from this." }),
-      isLoading ? /* @__PURE__ */ jsxRuntimeExports.jsx(Skeleton, { className: "h-48 w-full rounded-md" }) : /* @__PURE__ */ jsxRuntimeExports.jsx(
-        Textarea,
+    /* @__PURE__ */ jsxRuntimeExports.jsx(CardContent, { className: "grid gap-4", children: isLoading ? /* @__PURE__ */ jsxRuntimeExports.jsx(Skeleton, { className: "h-80 w-full rounded-md" }) : /* @__PURE__ */ jsxRuntimeExports.jsxs(jsxRuntimeExports.Fragment, { children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "grid gap-3 sm:grid-cols-2", children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsx(
+          Field,
+          {
+            label: "Full name",
+            value: profile.identity.fullName,
+            onChange: (fullName) => updateProfile({
+              ...profile,
+              identity: { ...profile.identity, fullName }
+            })
+          }
+        ),
+        /* @__PURE__ */ jsxRuntimeExports.jsx(
+          Field,
+          {
+            label: "Email",
+            value: profile.identity.email,
+            onChange: (email) => updateProfile({
+              ...profile,
+              identity: { ...profile.identity, email }
+            })
+          }
+        ),
+        /* @__PURE__ */ jsxRuntimeExports.jsx(
+          Field,
+          {
+            label: "Phone",
+            value: profile.identity.phone,
+            onChange: (phone) => updateProfile({
+              ...profile,
+              identity: { ...profile.identity, phone }
+            })
+          }
+        ),
+        /* @__PURE__ */ jsxRuntimeExports.jsx(
+          Field,
+          {
+            label: "Location",
+            value: profile.identity.location,
+            onChange: (location2) => updateProfile({
+              ...profile,
+              identity: { ...profile.identity, location: location2 }
+            })
+          }
+        ),
+        /* @__PURE__ */ jsxRuntimeExports.jsx(
+          Field,
+          {
+            label: "LinkedIn",
+            value: profile.identity.linkedin,
+            onChange: (linkedin) => updateProfile({
+              ...profile,
+              identity: { ...profile.identity, linkedin }
+            })
+          }
+        ),
+        /* @__PURE__ */ jsxRuntimeExports.jsx(
+          Field,
+          {
+            label: "Portfolio",
+            value: profile.identity.portfolio,
+            onChange: (portfolio) => updateProfile({
+              ...profile,
+              identity: { ...profile.identity, portfolio }
+            })
+          }
+        )
+      ] }),
+      /* @__PURE__ */ jsxRuntimeExports.jsx(
+        Field,
         {
-          value: text,
-          onChange: (e) => {
-            setText(e.target.value);
-            setDirty(true);
-          },
-          placeholder: "Paste your resume, work history, skills, and accomplishments here…",
-          className: "min-h-48 resize-y font-body text-sm leading-relaxed",
-          "data-ocid": "profile.input"
+          label: "Headline",
+          value: profile.headline,
+          onChange: (headline) => updateProfile({ ...profile, headline }),
+          placeholder: "Frontend/product engineer building AI-assisted workflows"
         }
       ),
-      /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center justify-between", children: [
-        /* @__PURE__ */ jsxRuntimeExports.jsxs(
-          "span",
+      /* @__PURE__ */ jsxRuntimeExports.jsx(
+        TextAreaField,
+        {
+          label: "Professional summary",
+          value: profile.summary,
+          onChange: (summary) => updateProfile({ ...profile, summary }),
+          placeholder: "Write the canonical profile summary the extension should draft from.",
+          rows: 6
+        }
+      ),
+      /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "grid gap-3 md:grid-cols-3", children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsx(
+          TextAreaField,
           {
-            className: "text-xs text-muted-foreground tabular-nums",
-            "data-ocid": "profile.char_count",
-            children: [
-              charCount.toLocaleString(),
-              " characters"
-            ]
+            label: "Skills",
+            value: skillsText,
+            onChange: (value) => {
+              setSkillsText(value);
+              setDirty(true);
+            },
+            placeholder: "React\nTypeScript\nAI workflows",
+            rows: 5
+          }
+        ),
+        /* @__PURE__ */ jsxRuntimeExports.jsx(
+          TextAreaField,
+          {
+            label: "Education / certs",
+            value: educationText,
+            onChange: (value) => {
+              setEducationText(value);
+              setDirty(true);
+            },
+            rows: 5
+          }
+        ),
+        /* @__PURE__ */ jsxRuntimeExports.jsx(
+          TextAreaField,
+          {
+            label: "Work preferences",
+            value: preferencesText,
+            onChange: (value) => {
+              setPreferencesText(value);
+              setDirty(true);
+            },
+            placeholder: "Remote preferred\nUS authorized\nNo sponsorship required",
+            rows: 5
+          }
+        )
+      ] }),
+      /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "flex justify-end", children: /* @__PURE__ */ jsxRuntimeExports.jsxs(
+        Button,
+        {
+          onClick: handleSave,
+          disabled: !dirty || saveProfile.isPending,
+          children: [
+            saveProfile.isPending ? /* @__PURE__ */ jsxRuntimeExports.jsx(LoaderCircle, { className: "mr-2 h-4 w-4 animate-spin" }) : null,
+            "Save living resume"
+          ]
+        }
+      ) })
+    ] }) })
+  ] });
+}
+function AnswerBank() {
+  const { data: answers = [], isLoading } = useListAnswers();
+  const saveAnswer = useSaveAnswer();
+  const [kind, setKind] = reactExports.useState("workAuthorization");
+  const [prompt, setPrompt] = reactExports.useState(
+    "Are you authorized to work in the United States?"
+  );
+  const [answer, setAnswer] = reactExports.useState("Yes");
+  const [sensitive, setSensitive] = reactExports.useState(true);
+  const handleSave = () => {
+    saveAnswer.mutate(
+      { kind, prompt, answer, sensitive },
+      {
+        onSuccess: () => ue.success("Approved answer saved"),
+        onError: () => ue.error("Could not save answer")
+      }
+    );
+  };
+  return /* @__PURE__ */ jsxRuntimeExports.jsxs(Card, { className: "border-border bg-card shadow-subtle", children: [
+    /* @__PURE__ */ jsxRuntimeExports.jsx(CardHeader, { className: "pb-3", children: /* @__PURE__ */ jsxRuntimeExports.jsxs(CardTitle, { className: "flex items-center gap-2 text-base", children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsx(ShieldCheck, { className: "h-4 w-4 text-primary" }),
+      "Approved answer bank"
+    ] }) }),
+    /* @__PURE__ */ jsxRuntimeExports.jsxs(CardContent, { className: "grid gap-4", children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "grid gap-3 sm:grid-cols-2", children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsx(Field, { label: "Field kind", value: kind, onChange: setKind }),
+        /* @__PURE__ */ jsxRuntimeExports.jsxs("label", { className: "flex items-center gap-2 self-end rounded-md border border-border bg-muted/30 px-3 py-2 text-sm", children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsx(
+            "input",
+            {
+              type: "checkbox",
+              checked: sensitive,
+              onChange: (event) => setSensitive(event.target.checked)
+            }
+          ),
+          "Manual-review sensitive answer"
+        ] })
+      ] }),
+      /* @__PURE__ */ jsxRuntimeExports.jsx(
+        TextAreaField,
+        {
+          label: "Prompt / field question",
+          value: prompt,
+          onChange: setPrompt,
+          rows: 3
+        }
+      ),
+      /* @__PURE__ */ jsxRuntimeExports.jsx(
+        TextAreaField,
+        {
+          label: "Approved answer",
+          value: answer,
+          onChange: setAnswer,
+          rows: 3
+        }
+      ),
+      /* @__PURE__ */ jsxRuntimeExports.jsxs(
+        Button,
+        {
+          onClick: handleSave,
+          disabled: !kind.trim() || !answer.trim() || saveAnswer.isPending,
+          className: "justify-self-end",
+          children: [
+            saveAnswer.isPending ? /* @__PURE__ */ jsxRuntimeExports.jsx(LoaderCircle, { className: "mr-2 h-4 w-4 animate-spin" }) : null,
+            "Save answer"
+          ]
+        }
+      ),
+      isLoading ? /* @__PURE__ */ jsxRuntimeExports.jsx(Skeleton, { className: "h-28 w-full rounded-md" }) : /* @__PURE__ */ jsxRuntimeExports.jsx("ul", { className: "grid gap-2", children: answers.map((item) => /* @__PURE__ */ jsxRuntimeExports.jsxs(
+        "li",
+        {
+          className: "rounded-md border border-border p-3",
+          children: [
+            /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center justify-between gap-3", children: [
+              /* @__PURE__ */ jsxRuntimeExports.jsx("strong", { className: "text-sm", children: item.kind }),
+              item.sensitive ? /* @__PURE__ */ jsxRuntimeExports.jsx(Badge, { variant: "secondary", children: "Review" }) : null
+            ] }),
+            /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "mt-1 text-xs text-muted-foreground", children: item.prompt }),
+            /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "mt-2 text-sm", children: item.answer })
+          ]
+        },
+        item.id.toString()
+      )) })
+    ] })
+  ] });
+}
+function DraftLab() {
+  const createDraft = useCreateDraft();
+  const [draft, setDraft] = reactExports.useState(null);
+  const [mode, setMode] = reactExports.useState("approved-answer");
+  const [description, setDescription] = reactExports.useState("");
+  const request2 = reactExports.useMemo(
+    () => ({
+      url: "https://boards.greenhouse.io/example/jobs/123",
+      pageTitle: "Frontend Engineer - Example Co",
+      platform: "greenhouse",
+      mode,
+      job: {
+        company: "Example Co",
+        title: "Frontend Engineer",
+        description
+      },
+      fields: [
+        {
+          id: "name",
+          name: "name",
+          label: "Full name",
+          placeholder: "",
+          ariaLabel: "",
+          tagName: "input",
+          fieldType: "text"
+        },
+        {
+          id: "email",
+          name: "email",
+          label: "Email",
+          placeholder: "",
+          ariaLabel: "",
+          tagName: "input",
+          fieldType: "email"
+        },
+        {
+          id: "sponsorship",
+          name: "sponsorship",
+          label: "Will you require sponsorship?",
+          placeholder: "",
+          ariaLabel: "",
+          tagName: "select",
+          fieldType: "select"
+        },
+        {
+          id: "interest",
+          name: "interest",
+          label: "Why are you interested in this role?",
+          placeholder: "",
+          ariaLabel: "",
+          tagName: "textarea",
+          fieldType: "textarea"
+        }
+      ]
+    }),
+    [description, mode]
+  );
+  const handleDraft = () => {
+    createDraft.mutate(request2, {
+      onSuccess: (result) => {
+        setDraft(result);
+        ue.success("Draft created");
+      },
+      onError: () => ue.error("Could not create draft")
+    });
+  };
+  return /* @__PURE__ */ jsxRuntimeExports.jsxs(Card, { className: "border-border bg-card shadow-subtle", children: [
+    /* @__PURE__ */ jsxRuntimeExports.jsx(CardHeader, { className: "pb-3", children: /* @__PURE__ */ jsxRuntimeExports.jsxs(CardTitle, { className: "flex items-center gap-2 text-base", children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsx(PlugZap, { className: "h-4 w-4 text-primary" }),
+      "Extension draft contract"
+    ] }) }),
+    /* @__PURE__ */ jsxRuntimeExports.jsxs(CardContent, { className: "grid gap-4", children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "grid gap-3 sm:grid-cols-[180px_1fr_auto]", children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsxs("label", { className: "grid gap-1.5 text-sm font-medium", children: [
+          "Mode",
+          /* @__PURE__ */ jsxRuntimeExports.jsxs(
+            "select",
+            {
+              value: mode,
+              onChange: (event) => setMode(event.target.value),
+              className: "min-h-10 rounded-md border border-input bg-background px-3 py-2 text-sm",
+              children: [
+                /* @__PURE__ */ jsxRuntimeExports.jsx("option", { value: "approved-answer", children: "Approved answers" }),
+                /* @__PURE__ */ jsxRuntimeExports.jsx("option", { value: "tailored-draft", children: "Tailored draft" })
+              ]
+            }
+          )
+        ] }),
+        /* @__PURE__ */ jsxRuntimeExports.jsx(
+          TextAreaField,
+          {
+            label: "Optional job description context",
+            value: description,
+            onChange: setDescription,
+            rows: 2
           }
         ),
         /* @__PURE__ */ jsxRuntimeExports.jsxs(
           Button,
           {
-            onClick: handleSave,
-            disabled: !dirty || saveProfile.isPending,
-            "data-ocid": "profile.save_button",
-            className: "gap-1.5 transition-smooth",
+            onClick: handleDraft,
+            disabled: createDraft.isPending,
+            className: "self-end",
             children: [
-              saveProfile.isPending ? /* @__PURE__ */ jsxRuntimeExports.jsx(LoaderCircle, { className: "h-3.5 w-3.5 animate-spin" }) : null,
-              "Save profile"
-            ]
-          }
-        )
-      ] })
-    ] })
-  ] });
-}
-function AnswerPanel() {
-  const generate = useGenerateAnswer();
-  const [question, setQuestion] = reactExports.useState("");
-  const [answer, setAnswer] = reactExports.useState(null);
-  const handleGenerate = () => {
-    if (!question.trim()) return;
-    generate.mutate(question, {
-      onSuccess: (res) => {
-        setAnswer(res);
-        ue.success("Answer generated");
-      },
-      onError: () => ue.error("Could not generate answer")
-    });
-  };
-  return /* @__PURE__ */ jsxRuntimeExports.jsxs(Card, { className: "bg-card border-border shadow-subtle", children: [
-    /* @__PURE__ */ jsxRuntimeExports.jsx(CardHeader, { className: "pb-3", children: /* @__PURE__ */ jsxRuntimeExports.jsxs(CardTitle, { className: "flex items-center gap-2 text-base", children: [
-      /* @__PURE__ */ jsxRuntimeExports.jsx(Sparkles, { className: "h-4 w-4 text-primary" }),
-      "Question & answer"
-    ] }) }),
-    /* @__PURE__ */ jsxRuntimeExports.jsxs(CardContent, { className: "flex flex-col gap-3", children: [
-      /* @__PURE__ */ jsxRuntimeExports.jsx(
-        Textarea,
-        {
-          value: question,
-          onChange: (e) => setQuestion(e.target.value),
-          placeholder: "Paste an application question or ATS form field here…",
-          className: "min-h-24 resize-y font-body text-sm leading-relaxed",
-          "data-ocid": "question.input"
-        }
-      ),
-      /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center justify-between", children: [
-        /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "text-xs text-muted-foreground", children: question.trim() ? "Ready to generate" : "Enter a question to begin" }),
-        /* @__PURE__ */ jsxRuntimeExports.jsxs(
-          Button,
-          {
-            onClick: handleGenerate,
-            disabled: !question.trim() || generate.isPending,
-            "data-ocid": "question.generate_button",
-            className: "gap-1.5 transition-smooth",
-            children: [
-              generate.isPending ? /* @__PURE__ */ jsxRuntimeExports.jsx(LoaderCircle, { className: "h-3.5 w-3.5 animate-spin" }) : /* @__PURE__ */ jsxRuntimeExports.jsx(Sparkles, { className: "h-3.5 w-3.5" }),
-              "Generate answer"
+              createDraft.isPending ? /* @__PURE__ */ jsxRuntimeExports.jsx(LoaderCircle, { className: "mr-2 h-4 w-4 animate-spin" }) : null,
+              "Create draft"
             ]
           }
         )
       ] }),
-      generate.isPending ? /* @__PURE__ */ jsxRuntimeExports.jsx(
-        Skeleton,
+      draft ? /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "grid gap-2", children: draft.suggestions.map((suggestion) => /* @__PURE__ */ jsxRuntimeExports.jsxs(
+        "div",
         {
-          className: "h-32 w-full rounded-md",
-          "data-ocid": "answer.loading_state"
-        }
-      ) : answer ? /* @__PURE__ */ jsxRuntimeExports.jsxs(
-        motion.div,
-        {
-          initial: { opacity: 0, y: 8 },
-          animate: { opacity: 1, y: 0 },
-          transition: { duration: 0.25 },
-          className: "rounded-lg border border-border bg-muted/30 p-4",
-          "data-ocid": "answer.output",
+          className: "grid gap-2 rounded-md border border-border bg-muted/20 p-3 sm:grid-cols-[1fr_1fr_auto]",
           children: [
-            /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-start justify-between gap-3 mb-2", children: [
-              /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "text-xs font-medium text-muted-foreground uppercase tracking-wide", children: "Suggested answer" }),
-              /* @__PURE__ */ jsxRuntimeExports.jsx(CopyButton, { text: answer.answer, ocid: "answer.copy_button" })
+            /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
+              /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-sm font-semibold", children: suggestion.label }),
+              /* @__PURE__ */ jsxRuntimeExports.jsxs("p", { className: "text-xs text-muted-foreground", children: [
+                suggestion.kind,
+                " · ",
+                suggestion.source
+              ] })
             ] }),
-            /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-sm text-foreground leading-relaxed whitespace-pre-wrap break-words", children: answer.answer })
+            /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-sm", children: suggestion.value || "No draft value" }),
+            /* @__PURE__ */ jsxRuntimeExports.jsx(
+              Badge,
+              {
+                variant: suggestion.requiresReview ? "secondary" : "default",
+                children: suggestion.requiresReview ? "Review" : `${suggestion.confidence.toString()}%`
+              }
+            )
           ]
-        }
-      ) : null
+        },
+        suggestion.fieldId
+      )) }) : null
     ] })
   ] });
 }
-function RecentAnswers() {
-  const { data, isLoading } = useRecentAnswers();
-  const items = (data ?? []).slice(0, 5);
-  const handleCopy = async (text) => {
-    try {
-      await navigator.clipboard.writeText(text);
-      ue.success("Copied to clipboard");
-    } catch {
-      ue.error("Could not copy");
-    }
-  };
-  return /* @__PURE__ */ jsxRuntimeExports.jsxs(Card, { className: "bg-card border-border shadow-subtle", children: [
-    /* @__PURE__ */ jsxRuntimeExports.jsx(CardHeader, { className: "pb-3", children: /* @__PURE__ */ jsxRuntimeExports.jsx(CardTitle, { className: "text-base", children: "Recent answers" }) }),
-    /* @__PURE__ */ jsxRuntimeExports.jsx(CardContent, { children: isLoading ? /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex flex-col gap-2", children: [
-      /* @__PURE__ */ jsxRuntimeExports.jsx(Skeleton, { className: "h-14 w-full rounded-md" }),
-      /* @__PURE__ */ jsxRuntimeExports.jsx(Skeleton, { className: "h-14 w-full rounded-md" }),
-      /* @__PURE__ */ jsxRuntimeExports.jsx(Skeleton, { className: "h-14 w-full rounded-md" })
-    ] }) : items.length === 0 ? /* @__PURE__ */ jsxRuntimeExports.jsx(
-      "div",
+function ApplicationTracker() {
+  const { data: applications = [], isLoading } = useListApplications();
+  const createApplication = useCreateApplication();
+  const seedApplication = () => {
+    createApplication.mutate(
       {
-        className: "text-sm text-muted-foreground py-6 text-center",
-        "data-ocid": "recent.empty_state",
-        children: "No answers yet. Generate your first one above."
+        company: "Example Co",
+        title: "Frontend Engineer",
+        url: "https://boards.greenhouse.io/example/jobs/123",
+        platform: "greenhouse",
+        status: "draft",
+        usedAnswerIds: []
+      },
+      {
+        onSuccess: () => ue.success("Application saved"),
+        onError: () => ue.error("Could not save application")
       }
-    ) : /* @__PURE__ */ jsxRuntimeExports.jsx("ul", { className: "flex flex-col gap-2", children: items.map((a2, i) => /* @__PURE__ */ jsxRuntimeExports.jsx("li", { "data-ocid": `recent.item.${i + 1}`, children: /* @__PURE__ */ jsxRuntimeExports.jsxs(
-      "button",
+    );
+  };
+  return /* @__PURE__ */ jsxRuntimeExports.jsxs(Card, { className: "border-border bg-card shadow-subtle", children: [
+    /* @__PURE__ */ jsxRuntimeExports.jsx(CardHeader, { className: "pb-3", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center justify-between gap-3", children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsxs(CardTitle, { className: "flex items-center gap-2 text-base", children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsx(BriefcaseBusiness, { className: "h-4 w-4 text-primary" }),
+        "Application tracker"
+      ] }),
+      /* @__PURE__ */ jsxRuntimeExports.jsx(Button, { variant: "outline", size: "sm", onClick: seedApplication, children: "Add sample" })
+    ] }) }),
+    /* @__PURE__ */ jsxRuntimeExports.jsx(CardContent, { children: isLoading ? /* @__PURE__ */ jsxRuntimeExports.jsx(Skeleton, { className: "h-24 w-full rounded-md" }) : applications.length === 0 ? /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-sm text-muted-foreground", children: "Filled applications will be saved here with company, role, ATS platform, and answer IDs." }) : /* @__PURE__ */ jsxRuntimeExports.jsx("ul", { className: "grid gap-2", children: applications.map((app) => /* @__PURE__ */ jsxRuntimeExports.jsxs(
+      "li",
       {
-        type: "button",
-        onClick: () => handleCopy(a2.answer),
-        className: "group w-full text-left rounded-md border border-border bg-background p-3 cursor-pointer hover:border-primary/40 hover:bg-muted/30 transition-smooth focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background",
+        className: "rounded-md border border-border p-3",
         children: [
-          /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-start justify-between gap-3", children: [
-            /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-sm font-medium text-foreground line-clamp-1 min-w-0 flex-1", children: a2.question }),
-            /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "text-xs text-muted-foreground shrink-0 tabular-nums", children: formatTimestamp(a2.createdAt) })
+          /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center justify-between gap-3", children: [
+            /* @__PURE__ */ jsxRuntimeExports.jsx("strong", { className: "text-sm", children: app.title }),
+            /* @__PURE__ */ jsxRuntimeExports.jsx(Badge, { variant: "secondary", children: app.status })
           ] }),
-          /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-xs text-muted-foreground line-clamp-2 mt-1 leading-relaxed", children: a2.answer }),
-          /* @__PURE__ */ jsxRuntimeExports.jsxs("span", { className: "text-[11px] text-muted-foreground/70 mt-1.5 inline-flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-smooth", children: [
-            /* @__PURE__ */ jsxRuntimeExports.jsx(Copy, { className: "h-3 w-3" }),
-            " Click to copy"
+          /* @__PURE__ */ jsxRuntimeExports.jsxs("p", { className: "mt-1 text-xs text-muted-foreground", children: [
+            app.company,
+            " · ",
+            app.platform
           ] })
         ]
-      }
-    ) }, a2.id.toString())) }) })
+      },
+      app.id.toString()
+    )) }) })
   ] });
 }
 function App() {
-  return /* @__PURE__ */ jsxRuntimeExports.jsx(Layout, { children: /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "mx-auto max-w-6xl px-5 sm:px-8 py-8 sm:py-12", children: /* @__PURE__ */ jsxRuntimeExports.jsxs(
-    motion.div,
-    {
-      initial: { opacity: 0, y: 12 },
-      animate: { opacity: 1, y: 0 },
-      transition: { duration: 0.4 },
-      className: "grid grid-cols-1 lg:grid-cols-2 gap-6",
-      children: [
-        /* @__PURE__ */ jsxRuntimeExports.jsx(
-          "div",
-          {
-            className: "lg:sticky lg:top-8 lg:self-start",
-            "data-ocid": "profile.panel",
-            children: /* @__PURE__ */ jsxRuntimeExports.jsx(ProfilePanel, {})
-          }
-        ),
-        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex flex-col gap-6", "data-ocid": "workspace.panel", children: [
-          /* @__PURE__ */ jsxRuntimeExports.jsx(AnswerPanel, {}),
-          /* @__PURE__ */ jsxRuntimeExports.jsx(RecentAnswers, {})
-        ] })
-      ]
-    }
-  ) }) });
+  return /* @__PURE__ */ jsxRuntimeExports.jsx(Layout, { children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "mx-auto grid max-w-7xl gap-6 px-5 py-6 sm:px-8 lg:grid-cols-[1.2fr_0.8fr]", children: [
+    /* @__PURE__ */ jsxRuntimeExports.jsxs(
+      motion.div,
+      {
+        initial: { opacity: 0, y: 10 },
+        animate: { opacity: 1, y: 0 },
+        transition: { duration: 0.25 },
+        className: "grid gap-6",
+        children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsx(ProfileWorkspace, {}),
+          /* @__PURE__ */ jsxRuntimeExports.jsx(DraftLab, {})
+        ]
+      }
+    ),
+    /* @__PURE__ */ jsxRuntimeExports.jsxs(
+      motion.div,
+      {
+        initial: { opacity: 0, y: 10 },
+        animate: { opacity: 1, y: 0 },
+        transition: { duration: 0.25, delay: 0.05 },
+        className: "grid content-start gap-6",
+        children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsxs(Card, { className: "border-border bg-card shadow-subtle", children: [
+            /* @__PURE__ */ jsxRuntimeExports.jsx(CardHeader, { className: "pb-3", children: /* @__PURE__ */ jsxRuntimeExports.jsxs(CardTitle, { className: "flex items-center gap-2 text-base", children: [
+              /* @__PURE__ */ jsxRuntimeExports.jsx(Database, { className: "h-4 w-4 text-primary" }),
+              "Source of truth"
+            ] }) }),
+            /* @__PURE__ */ jsxRuntimeExports.jsx(CardContent, { className: "text-sm leading-relaxed text-muted-foreground", children: "The Chrome extension scans ATS forms. This Caffeine app stores the living resume, approved answers, draft contract, and application history it should use." })
+          ] }),
+          /* @__PURE__ */ jsxRuntimeExports.jsx(AnswerBank, {}),
+          /* @__PURE__ */ jsxRuntimeExports.jsx(ApplicationTracker, {})
+        ]
+      }
+    )
+  ] }) });
 }
 BigInt.prototype.toJSON = function() {
   return this.toString();
