@@ -1,0 +1,19 @@
+{
+  "overview": "A simple single-page tool where a job seeker saves their profile once, then pastes any application question to get a suggested answer ready to copy into an ATS form.",
+  "features": [
+    "Save your resume or profile once and it persists across reloads",
+    "Paste any application question and generate a suggested answer from your profile",
+    "One-click copy to clipboard with visual feedback",
+    "Recent answers list showing the last 5 generated answers",
+    "Responsive two-column layout that stacks on mobile"
+  ],
+  "category": "tool",
+  "tags": [
+    "productivity",
+    "career",
+    "ats",
+    "autofill",
+    "demo"
+  ],
+  "last_updated": "2026-07-04T02:11:14.418Z"
+}

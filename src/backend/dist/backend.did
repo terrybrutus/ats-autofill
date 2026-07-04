@@ -1,0 +1,61 @@
+type UserRole = 
+ variant {
+   admin;
+   guest;
+   user;
+ };
+type Result = 
+ variant {
+   err: Error;
+   ok;
+ };
+type Profile = 
+ record {
+   "text": text;
+   updatedAt: int;
+ };
+type GeneratedAnswer = 
+ record {
+   answer: text;
+   createdAt: int;
+   id: nat;
+   question: text;
+ };
+type Error = 
+ variant {
+   AmbiguousAttribute: record {
+                         field: text;
+                         sources: vec text;
+                       };
+   FrontendOriginMismatch: record {
+                             expected: vec text;
+                             got: text;
+                           };
+   FrontendOriginsNotConfigured;
+   MalformedCandid;
+   MissingField: text;
+   MixedSsoSources: record {
+                      otherKeys: vec text;
+                      ssoKeys: vec text;
+                    };
+   NoAttributes;
+   Stale: record {ageNs: nat;};
+   UnknownNonce;
+   UntrustedSsoSource: record {domain: text;};
+ };
+service : {
+  __accessControlState: () -> (reserved) query;
+  __answersState: () -> (reserved) query;
+  __profileState: () -> (reserved) query;
+  _initialize_access_control: () -> ();
+  _internet_identity_sign_in_finish: () -> (Result);
+  _internet_identity_sign_in_start: () -> (blob);
+  assignCallerUserRole: (user: principal, role: UserRole) -> ();
+  generateAnswer: (question: text) -> (GeneratedAnswer);
+  getCallerUserRole: () -> (UserRole) query;
+  getProfile: () -> (opt Profile) query;
+  getProfileCharCount: () -> (nat) query;
+  isCallerAdmin: () -> (bool) query;
+  recentAnswers: () -> (vec GeneratedAnswer) query;
+  saveProfile: ("text": text) -> ();
+}

@@ -1,0 +1,48 @@
+// Version: 4.0.0
+type AccessControlState__997315984 =
+  {
+    var adminAssigned : Bool;
+    userRoles : Map__222667396<Principal, UserRole__74112318>
+  };
+type Data__80296667<K, V> =
+  {var count : Nat__1040412405; kvs : [var ?(K, V)]};
+type GeneratedAnswer__196668388 =
+  {answer : Text; createdAt : Int; id : Nat; question : Text};
+type GeneratedAnswer__387018158 =
+  {answer : Text; createdAt : Int; id : Nat; question : Text};
+type Internal__41346355<K, V> =
+  {children : [var ?Node__1000929467<K, V>]; data : Data__80296667<K, V>};
+type Leaf__712614010<K, V> = {data : Data__80296667<K, V>};
+type Map__222667396<K, V> = Map__912772452<K, V>;
+type Map__709709801<K, V> =
+  {var root : Node__1000929467<K, V>; var size : Nat__1040412405};
+type Map__912772452<K, V> = Map__709709801<K, V>;
+type Nat__1040412405 = Nat__920180692;
+type Nat__920180692 = Nat;
+type NewActor__894337367 =
+  {
+    accessControlState : AccessControlState__997315984;
+    answersState :
+      {var answers : [GeneratedAnswer__196668388]; var nextId : Nat};
+    profileState : {var profile : ?Profile__646989507}
+  };
+type Node__1000929467<K, V> =
+  {#internal : Internal__41346355<K, V>; #leaf : Leaf__712614010<K, V>};
+type OldActor__444617298 = {};
+type Profile__646989507 = {text : Text; updatedAt : Int};
+type Profile__666895289 = {text : Text; updatedAt : Int};
+type UserRole__686137147 = {#admin; #guest; #user};
+type UserRole__74112318 = {#admin; #guest; #user};
+{
+  "20260704_000000" : (_old : OldActor__444617298) -> NewActor__894337367
+}
+actor  {
+  stable accessControlState :
+    {
+      var adminAssigned : Bool;
+      userRoles : Map__222667396<Principal, UserRole__686137147>
+    };
+  stable answersState :
+    {var answers : [GeneratedAnswer__387018158]; var nextId : Nat};
+  stable profileState : {var profile : ?Profile__666895289}
+};
