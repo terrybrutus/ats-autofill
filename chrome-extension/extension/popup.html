@@ -11,19 +11,7 @@
       <p class="eyebrow">Caffeine Job Copilot</p>
       <h1>Application draft</h1>
       <p id="status">Checking backend...</p>
-      <label class="field">
-        API URL
-        <input id="api-url" type="url" value="http://localhost:4321" />
-      </label>
-      <label class="field">
-        Fill mode
-        <select id="fill-mode">
-          <option value="approved-answer">Approved answers</option>
-          <option value="tailored-draft">Tailored draft</option>
-        </select>
-      </label>
       <button id="scan" type="button">Scan current page</button>
-      <button id="apply" type="button" disabled>Fill selected fields</button>
       <section id="results" aria-live="polite"></section>
     </main>
     <script type="module" src="popup.js"></script>

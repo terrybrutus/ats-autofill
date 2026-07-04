@@ -17,8 +17,6 @@ test("maps unknown fields as custom with lower confidence", () => {
 
 test("creates draft suggestions and marks sensitive answers for review", () => {
   const draft = createDraftSuggestions({
-    platform: "greenhouse",
-    mode: "tailored-draft",
     fields: [{ label: "Will you require sponsorship?" }, { label: "Email" }],
   });
   const sponsorship = draft.suggestions.find(
@@ -30,6 +28,4 @@ test("creates draft suggestions and marks sensitive answers for review", () => {
 
   assert.equal(sponsorship.requiresReview, true);
   assert.equal(email.requiresReview, false);
-  assert.equal(draft.platform, "greenhouse");
-  assert.equal(draft.mode, "tailored-draft");
 });

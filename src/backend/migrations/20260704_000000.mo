@@ -9,10 +9,7 @@ module {
     userRoles : Map.Map<Principal, UserRole>;
   };
 
-  type Profile = {
-    text : Text;
-    updatedAt : Int;
-  };
+  type Profile = { text : Text; updatedAt : Int };
 
   type GeneratedAnswer = {
     id : Nat;
@@ -22,7 +19,6 @@ module {
   };
 
   type OldActor = {};
-
   type NewActor = {
     accessControlState : AccessControlState;
     profileState : { var profile : ?Profile };
