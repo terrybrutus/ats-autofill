@@ -117,7 +117,7 @@ module {
           let sensitive = isSensitiveKind(kind) or optionSensitive(answer);
           {
             fieldId = field.id;
-            label = bestLabel(field);
+            fieldLabel = bestLabel(field);
             kind = kind;
             value = valueAndSource.0;
             source = valueAndSource.1;
@@ -179,7 +179,7 @@ module {
   };
 
   func classifyField(field : DetectedField) : Text {
-    let haystack = field.label # " " # field.name # " " # field.placeholder # " " # field.ariaLabel;
+    let haystack = field.fieldLabel # " " # field.name # " " # field.placeholder # " " # field.ariaLabel;
     if (containsAny(haystack, ["email", "e-mail"])) { "email" }
     else if (containsAny(haystack, ["phone", "mobile", "cell"])) { "phone" }
     else if (containsAny(haystack, ["first name", "given name"])) { "firstName" }
@@ -207,7 +207,7 @@ module {
   };
 
   func bestLabel(field : DetectedField) : Text {
-    if (field.label != "") { field.label }
+    if (field.fieldLabel != "") { field.fieldLabel }
     else if (field.placeholder != "") { field.placeholder }
     else if (field.name != "") { field.name }
     else { field.id };

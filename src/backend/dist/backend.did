@@ -99,7 +99,7 @@ type DetectedField =
    ariaLabel: text;
    fieldType: text;
    id: text;
-   label: text;
+   fieldLabel: text;
    name: text;
    placeholder: text;
    tagName: text;
@@ -118,7 +118,7 @@ type FieldSuggestion =
    confidence: nat;
    fieldId: text;
    kind: text;
-   label: text;
+   fieldLabel: text;
    requiresReview: bool;
    source: text;
    value: text;

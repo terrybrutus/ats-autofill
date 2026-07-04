@@ -78,7 +78,7 @@ export interface DetectedField {
   ariaLabel: string;
   fieldType: string;
   id: string;
-  label: string;
+  fieldLabel: string;
   name: string;
   placeholder: string;
   tagName: string;
@@ -95,7 +95,7 @@ export interface FieldSuggestion {
   confidence: bigint;
   fieldId: string;
   kind: string;
-  label: string;
+  fieldLabel: string;
   requiresReview: boolean;
   source: string;
   value: string;

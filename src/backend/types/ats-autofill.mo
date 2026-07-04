@@ -59,7 +59,7 @@ module {
   public type DetectedField = {
     id : Text;
     name : Text;
-    label : Text;
+    fieldLabel : Text;
     placeholder : Text;
     ariaLabel : Text;
     tagName : Text;
@@ -83,7 +83,7 @@ module {
 
   public type FieldSuggestion = {
     fieldId : Text;
-    label : Text;
+    fieldLabel : Text;
     kind : Text;
     value : Text;
     confidence : Nat;

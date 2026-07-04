@@ -31786,7 +31786,7 @@ const DetectedField = Record({
   ariaLabel: Text,
   fieldType: Text,
   id: Text,
-  label: Text,
+  fieldLabel: Text,
   name: Text,
   placeholder: Text,
   tagName: Text
@@ -31803,7 +31803,7 @@ const FieldSuggestion = Record({
   confidence: Nat,
   fieldId: Text,
   kind: Text,
-  label: Text,
+  fieldLabel: Text,
   requiresReview: Bool,
   source: Text,
   value: Text
@@ -31930,7 +31930,7 @@ const idlFactory = ({ IDL: IDL2 }) => {
     ariaLabel: IDL2.Text,
     fieldType: IDL2.Text,
     id: IDL2.Text,
-    label: IDL2.Text,
+    fieldLabel: IDL2.Text,
     name: IDL2.Text,
     placeholder: IDL2.Text,
     tagName: IDL2.Text
@@ -31947,7 +31947,7 @@ const idlFactory = ({ IDL: IDL2 }) => {
     confidence: IDL2.Nat,
     fieldId: IDL2.Text,
     kind: IDL2.Text,
-    label: IDL2.Text,
+    fieldLabel: IDL2.Text,
     requiresReview: IDL2.Bool,
     source: IDL2.Text,
     value: IDL2.Text
@@ -40866,7 +40866,7 @@ function DraftLab() {
         {
           id: "name",
           name: "name",
-          label: "Full name",
+          fieldLabel: "Full name",
           placeholder: "",
           ariaLabel: "",
           tagName: "input",
@@ -40875,7 +40875,7 @@ function DraftLab() {
         {
           id: "email",
           name: "email",
-          label: "Email",
+          fieldLabel: "Email",
           placeholder: "",
           ariaLabel: "",
           tagName: "input",
@@ -40884,7 +40884,7 @@ function DraftLab() {
         {
           id: "sponsorship",
           name: "sponsorship",
-          label: "Will you require sponsorship?",
+          fieldLabel: "Will you require sponsorship?",
           placeholder: "",
           ariaLabel: "",
           tagName: "select",
@@ -40893,7 +40893,7 @@ function DraftLab() {
         {
           id: "interest",
           name: "interest",
-          label: "Why are you interested in this role?",
+          fieldLabel: "Why are you interested in this role?",
           placeholder: "",
           ariaLabel: "",
           tagName: "textarea",
@@ -40962,7 +40962,7 @@ function DraftLab() {
           className: "grid gap-2 rounded-md border border-border bg-muted/20 p-3 sm:grid-cols-[1fr_1fr_auto]",
           children: [
             /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
-              /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-sm font-semibold", children: suggestion.label }),
+              /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-sm font-semibold", children: suggestion.fieldLabel }),
               /* @__PURE__ */ jsxRuntimeExports.jsxs("p", { className: "text-xs text-muted-foreground", children: [
                 suggestion.kind,
                 " · ",

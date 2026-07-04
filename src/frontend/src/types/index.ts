@@ -58,7 +58,7 @@ export interface ApplicationRecord {
 export interface DetectedField {
   id: string;
   name: string;
-  label: string;
+  fieldLabel: string;
   placeholder: string;
   ariaLabel: string;
   tagName: string;
@@ -82,7 +82,7 @@ export interface DraftRequest {
 
 export interface FieldSuggestion {
   fieldId: string;
-  label: string;
+  fieldLabel: string;
   kind: string;
   value: string;
   confidence: bigint;

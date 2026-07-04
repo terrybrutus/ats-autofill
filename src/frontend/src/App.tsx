@@ -407,7 +407,7 @@ function DraftLab() {
         {
           id: "name",
           name: "name",
-          label: "Full name",
+          fieldLabel: "Full name",
           placeholder: "",
           ariaLabel: "",
           tagName: "input",
@@ -416,7 +416,7 @@ function DraftLab() {
         {
           id: "email",
           name: "email",
-          label: "Email",
+          fieldLabel: "Email",
           placeholder: "",
           ariaLabel: "",
           tagName: "input",
@@ -425,7 +425,7 @@ function DraftLab() {
         {
           id: "sponsorship",
           name: "sponsorship",
-          label: "Will you require sponsorship?",
+          fieldLabel: "Will you require sponsorship?",
           placeholder: "",
           ariaLabel: "",
           tagName: "select",
@@ -434,7 +434,7 @@ function DraftLab() {
         {
           id: "interest",
           name: "interest",
-          label: "Why are you interested in this role?",
+          fieldLabel: "Why are you interested in this role?",
           placeholder: "",
           ariaLabel: "",
           tagName: "textarea",
@@ -501,7 +501,7 @@ function DraftLab() {
                 className="grid gap-2 rounded-md border border-border bg-muted/20 p-3 sm:grid-cols-[1fr_1fr_auto]"
               >
                 <div>
-                  <p className="text-sm font-semibold">{suggestion.label}</p>
+                  <p className="text-sm font-semibold">{suggestion.fieldLabel}</p>
                   <p className="text-xs text-muted-foreground">
                     {suggestion.kind} · {suggestion.source}
                   </p>

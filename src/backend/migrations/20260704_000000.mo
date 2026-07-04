@@ -68,7 +68,7 @@ module {
 
   type FieldSuggestion = {
     fieldId : Text;
-    label : Text;
+    fieldLabel : Text;
     kind : Text;
     value : Text;
     confidence : Nat;
