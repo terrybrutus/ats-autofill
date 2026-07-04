@@ -43,11 +43,67 @@ button {
   padding: 10px 14px;
 }
 
-button:focus-visible {
+button:disabled {
+  cursor: not-allowed;
+  opacity: 0.55;
+}
+
+button:focus-visible,
+input:focus-visible,
+select:focus-visible {
   outline: 3px solid #28a979;
   outline-offset: 2px;
 }
 
+.field {
+  display: grid;
+  gap: 4px;
+  font-size: 0.82rem;
+  font-weight: 700;
+}
+
+input,
+select {
+  border: 1px solid #bac4ce;
+  border-radius: 6px;
+  box-sizing: border-box;
+  font: inherit;
+  min-height: 36px;
+  padding: 8px 10px;
+  width: 100%;
+}
+
 ul {
   padding-left: 18px;
+}
+
+#results {
+  display: grid;
+  gap: 10px;
+}
+
+.suggestion {
+  align-items: flex-start;
+  border: 1px solid #d9e0e6;
+  border-radius: 6px;
+  display: grid;
+  gap: 8px;
+  grid-template-columns: 18px 1fr;
+  padding: 10px;
+}
+
+.suggestion input[type="checkbox"] {
+  height: 16px;
+  margin-top: 3px;
+  min-height: 16px;
+  width: 16px;
+}
+
+.suggestion-copy {
+  display: grid;
+  gap: 6px;
+}
+
+.suggestion-copy small {
+  color: #5d6975;
 }
