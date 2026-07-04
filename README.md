@@ -1,5 +1,7 @@
 # Caffeine Job Copilot
 
+Exported from Caffeine project: ATS Autofill.
+
 A small starter repo for a review-first Chrome extension that helps fill job applications from a living resume.
 
 This first version intentionally keeps the backend simple. It gives us something real to push to GitHub, inspect, and evolve before wiring a full Caffeine AI backend.
