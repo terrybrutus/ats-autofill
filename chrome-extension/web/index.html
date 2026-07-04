@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Caffeine Job Copilot</title>
+    <link rel="stylesheet" href="/web/styles.css" />
+  </head>
+  <body>
+    <main class="shell">
+      <section class="hero">
+        <p class="eyebrow">Caffeine Job Copilot</p>
+        <h1>Review-first job application assistant.</h1>
+        <p>
+          A local starter backend and Chrome extension skeleton for filling ATS forms from a living
+          resume, answer bank, and role-specific drafts.
+        </p>
+      </section>
+
+      <section class="grid" aria-label="Project status">
+        <article>
+          <span class="status-dot"></span>
+          <h2>Local backend</h2>
+          <p id="health">Checking connection...</p>
+        </article>
+        <article>
+          <h2>Living resume</h2>
+          <p id="profile">Loading mocked profile...</p>
+        </article>
+        <article>
+          <h2>Application safety</h2>
+          <p>No auto-submit. Sensitive answers require review.</p>
+        </article>
+      </section>
+
+      <section class="panel">
+        <h2>Next build path</h2>
+        <ol>
+          <li>Load the extension in Chrome.</li>
+          <li>Scan a real ATS form.</li>
+          <li>Review the generated draft suggestions.</li>
+          <li>Use the observed field data to shape the real Caffeine backend.</li>
+        </ol>
+      </section>
+    </main>
+    <script type="module" src="/web/main.js"></script>
+  </body>
+</html>
