@@ -95,13 +95,13 @@ mixin (
   public query func getExtensionContractVersion() : async Text {
     "ats-autofill-contract-v1";
   };
-};
 
-func append<T>(items : [T], item : T) : [T] {
-  Array.tabulate<T>(
-    items.size() + 1,
-    func(i) {
-      if (i < items.size()) { items[i] } else { item };
-    },
-  );
+  func append<T>(items : [T], item : T) : [T] {
+    Array.tabulate<T>(
+      items.size() + 1,
+      func(i) {
+        if (i < items.size()) { items[i] } else { item };
+      },
+    );
+  };
 };

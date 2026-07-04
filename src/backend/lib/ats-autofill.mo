@@ -1,4 +1,5 @@
 import Array "mo:core/Array";
+import Nat "mo:core/Nat";
 import Text "mo:core/Text";
 import Types "../types/ats-autofill";
 
@@ -253,10 +254,12 @@ module {
 
   func tail<T>(items : [T], count : Nat) : [T] {
     let total = items.size();
-    if (total <= count) {
+    if (count == 0) {
+      [];
+    } else if (total <= count) {
       items;
     } else {
-      let start = total - count;
+      let start = Nat.sub(total, count);
       Array.tabulate<T>(count, func(i) { items[start + i] });
     };
   };
