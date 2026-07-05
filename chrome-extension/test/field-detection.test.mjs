@@ -4,20 +4,25 @@ import { classifyField, mapDetectedFields } from "../shared/field-detection.js";
 import { createDraftSuggestions } from "../shared/mock-data.js";
 
 test("classifies common contact fields", () => {
-  assert.equal(classifyField({ label: "Email address" }), "email");
-  assert.equal(classifyField({ label: "First name" }), "firstName");
-  assert.equal(classifyField({ label: "LinkedIn profile" }), "linkedin");
+  assert.equal(classifyField({ fieldLabel: "Email address" }), "email");
+  assert.equal(classifyField({ fieldLabel: "First name" }), "firstName");
+  assert.equal(classifyField({ fieldLabel: "LinkedIn profile" }), "linkedin");
 });
 
 test("maps unknown fields as custom with lower confidence", () => {
-  const [field] = mapDetectedFields([{ label: "Tell us something unusual" }]);
+  const [field] = mapDetectedFields([
+    { fieldLabel: "Tell us something unusual" },
+  ]);
   assert.equal(field.kind, "custom");
   assert.equal(field.confidence, 0.35);
 });
 
 test("creates draft suggestions and marks sensitive answers for review", () => {
   const draft = createDraftSuggestions({
-    fields: [{ label: "Will you require sponsorship?" }, { label: "Email" }],
+    fields: [
+      { fieldLabel: "Will you require sponsorship?" },
+      { fieldLabel: "Email" },
+    ],
   });
   const sponsorship = draft.suggestions.find(
     (suggestion) => suggestion.kind === "sponsorship",

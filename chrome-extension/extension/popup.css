@@ -31,7 +31,30 @@ h1 {
   font-size: 1.45rem;
 }
 
-button {
+form {
+  display: grid;
+  gap: 10px;
+}
+
+label {
+  display: grid;
+  gap: 4px;
+  font-size: 0.78rem;
+  font-weight: 700;
+}
+
+input,
+select {
+  border: 1px solid #b8c2cc;
+  border-radius: 6px;
+  color: #17202a;
+  font: inherit;
+  min-height: 36px;
+  padding: 8px;
+}
+
+button,
+a {
   background: #17324d;
   border: 0;
   border-radius: 6px;
@@ -41,13 +64,27 @@ button {
   font-weight: 700;
   min-height: 42px;
   padding: 10px 14px;
+  text-align: center;
+  text-decoration: none;
 }
 
-button:focus-visible {
+button.secondary {
+  background: #e8eef3;
+  color: #17324d;
+}
+
+button:focus-visible,
+a:focus-visible,
+input:focus-visible,
+select:focus-visible {
   outline: 3px solid #28a979;
   outline-offset: 2px;
 }
 
 ul {
   padding-left: 18px;
+}
+
+li {
+  margin-block: 6px;
 }

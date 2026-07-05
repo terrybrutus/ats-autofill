@@ -39,6 +39,16 @@ The backend uses only Node built-ins, so `npm run dev` and `npm test` work witho
 5. Select the generated `dist/extension` folder.
 6. Keep the backend running with `npm run dev` so the popup can call `http://localhost:4321`.
 
+## Backend Connection
+
+The popup has a Backend URL setting. For local testing, keep it as:
+
+```text
+http://localhost:4321
+```
+
+When the Caffeine app is deployed and exposes the extension API, paste that backend URL into the popup and click Save. The extension sends the current page URL, page title, ATS platform, selected draft mode, and detected fields using the same `fieldLabel` / `fieldType` contract as the Caffeine backend.
+
 ## Safety Principles
 
 - The extension does not auto-submit applications.

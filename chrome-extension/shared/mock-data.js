@@ -81,7 +81,7 @@ export const createDraftSuggestions = (request) => {
     },
     suggestions: mappedFields.map((field) => ({
       fieldId: field.id,
-      label: field.label,
+      fieldLabel: field.fieldLabel,
       kind: field.kind,
       value: valuesByKind[field.kind] ?? "",
       confidence: field.confidence,

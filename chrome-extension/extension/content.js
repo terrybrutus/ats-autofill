@@ -25,18 +25,18 @@ const detectFields = () =>
     .map((element, index) => ({
       id: element.id || `detected-${index}`,
       name: element.getAttribute("name") || "",
-      label: getLabelFor(element),
+      fieldLabel: getLabelFor(element),
       placeholder: element.getAttribute("placeholder") || "",
       ariaLabel: element.getAttribute("aria-label") || "",
       tagName: element.tagName.toLowerCase(),
-      type: element.getAttribute("type") || element.tagName.toLowerCase(),
+      fieldType: element.getAttribute("type") || element.tagName.toLowerCase(),
     }));
 
 chrome.runtime.onMessage.addListener((message, _sender, sendResponse) => {
   if (message.type === "DETECT_FIELDS") {
     sendResponse({
       url: window.location.href,
-      title: document.title,
+      pageTitle: document.title,
       fields: detectFields(),
     });
   }

@@ -11,7 +11,30 @@
       <p class="eyebrow">Caffeine Job Copilot</p>
       <h1>Application draft</h1>
       <p id="status">Checking backend...</p>
+      <form id="settings">
+        <label>
+          Backend URL
+          <input
+            id="apiBaseUrl"
+            name="apiBaseUrl"
+            type="url"
+            spellcheck="false"
+            autocomplete="off"
+          />
+        </label>
+        <label>
+          Mode
+          <select id="fillMode" name="fillMode">
+            <option value="approved-answer">Approved answers</option>
+            <option value="tailored-draft">Tailored draft</option>
+          </select>
+        </label>
+        <button id="saveSettings" type="submit">Save</button>
+      </form>
       <button id="scan" type="button">Scan current page</button>
+      <a id="openBackend" href="http://localhost:4321" target="_blank" rel="noreferrer">
+        Open backend
+      </a>
       <section id="results" aria-live="polite"></section>
     </main>
     <script type="module" src="popup.js"></script>

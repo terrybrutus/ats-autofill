@@ -21,7 +21,13 @@ export const normalizeLabel = (value) => value.replace(/\s+/g, " ").trim();
 
 export const classifyField = (field) => {
   const haystack = normalizeLabel(
-    [field.label, field.name, field.id, field.placeholder, field.ariaLabel]
+    [
+      field.fieldLabel ?? field.label,
+      field.name,
+      field.id,
+      field.placeholder,
+      field.ariaLabel,
+    ]
       .filter(Boolean)
       .join(" "),
   );
@@ -38,8 +44,12 @@ export const classifyField = (field) => {
 export const mapDetectedFields = (fields) =>
   fields.map((field, index) => ({
     id: field.id || field.name || `field-${index}`,
-    label: normalizeLabel(
-      field.label || field.placeholder || field.name || `Field ${index + 1}`,
+    fieldLabel: normalizeLabel(
+      field.fieldLabel ||
+        field.label ||
+        field.placeholder ||
+        field.name ||
+        `Field ${index + 1}`,
     ),
     kind: classifyField(field),
     confidence: classifyField(field) === "custom" ? 0.35 : 0.78,
