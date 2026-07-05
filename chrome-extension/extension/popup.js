@@ -48,6 +48,24 @@ const getActiveTab = async () => {
   return tab;
 };
 
+const detectFieldsInTab = async (tabId) => {
+  try {
+    return await chrome.tabs.sendMessage(tabId, { type: "DETECT_FIELDS" });
+  } catch (error) {
+    const message = error instanceof Error ? error.message : String(error);
+    if (!message.includes("Receiving end does not exist")) {
+      throw error;
+    }
+
+    await chrome.scripting.executeScript({
+      target: { tabId },
+      files: ["content.js"],
+    });
+
+    return chrome.tabs.sendMessage(tabId, { type: "DETECT_FIELDS" });
+  }
+};
+
 const escapeHtml = (value) =>
   String(value)
     .replaceAll("&", "&amp;")
@@ -65,7 +83,7 @@ const scanPage = async () => {
   }
 
   results.textContent = "Scanning current page...";
-  const page = await chrome.tabs.sendMessage(tab.id, { type: "DETECT_FIELDS" });
+  const page = await detectFieldsInTab(tab.id);
   const draftResponse = await fetch(`${apiBaseUrl}/api/draft`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },

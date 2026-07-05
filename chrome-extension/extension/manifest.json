@@ -19,5 +19,5 @@
     }
   ],
   "host_permissions": ["http://localhost:4321/*", "https://*/*"],
-  "permissions": ["activeTab", "storage"]
+  "permissions": ["activeTab", "scripting", "storage"]
 }
