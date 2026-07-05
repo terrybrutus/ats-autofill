@@ -25,6 +25,12 @@ export const fieldKinds = [
   "workAuthorization",
   "sponsorship",
   "salary",
+  "gender",
+  "race",
+  "veteran",
+  "disability",
+  "pronouns",
+  "eeo",
   "custom",
 ];
 
@@ -32,6 +38,12 @@ export const sensitiveFieldKinds = new Set([
   "workAuthorization",
   "sponsorship",
   "salary",
+  "gender",
+  "race",
+  "veteran",
+  "disability",
+  "pronouns",
+  "eeo",
 ]);
 
 export const isKnownPlatform = (value) => atsPlatforms.includes(value);

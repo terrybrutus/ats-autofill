@@ -205,19 +205,25 @@ module {
 
   func classifyField(field : DetectedField) : Text {
     let haystack = field.fieldLabel # " " # field.name # " " # field.placeholder # " " # field.ariaLabel;
-    if (containsAny(haystack, ["email", "e-mail"])) { "email" }
-    else if (containsAny(haystack, ["phone", "mobile", "cell"])) { "phone" }
-    else if (containsAny(haystack, ["first name", "given name"])) { "firstName" }
-    else if (containsAny(haystack, ["last name", "surname", "family name"])) { "lastName" }
-    else if (containsAny(haystack, ["full name", "legal name", "name"])) { "fullName" }
-    else if (containsAny(haystack, ["location", "city", "state", "address"])) { "location" }
-    else if (containsAny(haystack, ["linkedin"])) { "linkedin" }
-    else if (containsAny(haystack, ["portfolio", "website", "github", "personal site"])) { "portfolio" }
-    else if (containsAny(haystack, ["resume", "cv"])) { "resume" }
-    else if (containsAny(haystack, ["cover letter"])) { "coverLetter" }
-    else if (containsAny(haystack, ["authorized", "work authorization", "eligible to work"])) { "workAuthorization" }
-    else if (containsAny(haystack, ["sponsor", "sponsorship", "visa"])) { "sponsorship" }
-    else if (containsAny(haystack, ["salary", "compensation", "pay"])) { "salary" }
+    if (containsAny(haystack, ["disability", "Disability", "disabled", "Disabled", "form cc-305", "Form CC-305", "reasonable accommodation", "Reasonable accommodation"])) { "disability" }
+    else if (containsAny(haystack, ["veteran", "Veteran", "protected veteran", "Protected veteran", "armed forces", "Armed forces", "military service", "Military service"])) { "veteran" }
+    else if (containsAny(haystack, ["race", "Race", "ethnicity", "Ethnicity", "hispanic", "Hispanic", "latino", "Latino", "black", "Black", "african american", "African American", "white", "White", "asian", "Asian", "native hawaiian", "Native Hawaiian", "pacific islander", "Pacific Islander", "american indian", "American Indian", "alaska native", "Alaska Native", "two or more races", "Two or More Races"])) { "race" }
+    else if (containsAny(haystack, ["gender", "Gender", "male", "Male", "female", "Female", "decline to self-identify", "Decline to self-identify"])) { "gender" }
+    else if (containsAny(haystack, ["pronouns", "Pronouns", "she/her", "She/Her", "he/him", "He/Him", "they/them", "They/Them"])) { "pronouns" }
+    else if (containsAny(haystack, ["eeo", "EEO", "equal employment", "Equal Employment", "self-identify", "Self-identify", "voluntary self-identification", "Voluntary Self-Identification", "demographic", "Demographic"])) { "eeo" }
+    else if (containsAny(haystack, ["email", "Email", "e-mail", "E-mail"])) { "email" }
+    else if (containsAny(haystack, ["phone", "Phone", "mobile", "Mobile", "cell", "Cell"])) { "phone" }
+    else if (containsAny(haystack, ["first name", "First name", "First Name", "given name", "Given name", "Given Name"])) { "firstName" }
+    else if (containsAny(haystack, ["last name", "Last name", "Last Name", "surname", "Surname", "family name", "Family name", "Family Name"])) { "lastName" }
+    else if (containsAny(haystack, ["full name", "Full name", "Full Name", "legal name", "Legal name", "Legal Name", "name", "Name"])) { "fullName" }
+    else if (containsAny(haystack, ["location", "Location", "city", "City", "state", "State", "address", "Address"])) { "location" }
+    else if (containsAny(haystack, ["linkedin", "LinkedIn", "Linkedin"])) { "linkedin" }
+    else if (containsAny(haystack, ["portfolio", "Portfolio", "website", "Website", "github", "Github", "GitHub", "personal site", "Personal site", "Personal Site"])) { "portfolio" }
+    else if (containsAny(haystack, ["resume", "Resume", "cv", "CV"])) { "resume" }
+    else if (containsAny(haystack, ["cover letter", "Cover letter", "Cover Letter"])) { "coverLetter" }
+    else if (containsAny(haystack, ["authorized", "Authorized", "work authorization", "Work authorization", "Work Authorization", "eligible to work", "Eligible to work", "Eligible to Work"])) { "workAuthorization" }
+    else if (containsAny(haystack, ["sponsor", "Sponsor", "sponsorship", "Sponsorship", "visa", "Visa"])) { "sponsorship" }
+    else if (containsAny(haystack, ["salary", "Salary", "compensation", "Compensation", "pay", "Pay"])) { "salary" }
     else { "custom" };
   };
 
@@ -239,7 +245,7 @@ module {
   };
 
   func isSensitiveKind(kind : Text) : Bool {
-    kind == "workAuthorization" or kind == "sponsorship" or kind == "salary";
+    kind == "workAuthorization" or kind == "sponsorship" or kind == "salary" or kind == "gender" or kind == "race" or kind == "veteran" or kind == "disability" or kind == "pronouns" or kind == "eeo";
   };
 
   func optionSensitive(answer : ?AnswerBankEntry) : Bool {

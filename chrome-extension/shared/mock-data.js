@@ -66,6 +66,23 @@ const valuesByKind = {
   sponsorship: "No",
 };
 
+const sourceByKind = {
+  firstName: "profile.identity",
+  lastName: "profile.identity",
+  fullName: "profile.identity",
+  email: "profile.identity",
+  phone: "profile.identity",
+  location: "profile.identity",
+  linkedin: "profile.links",
+  portfolio: "profile.links",
+  workAuthorization: "approved-answer",
+  sponsorship: "approved-answer",
+  coverLetter: "tailored-draft",
+  resume: "manual-upload",
+};
+
+const alwaysReviewKinds = new Set(["custom", "resume", "coverLetter"]);
+
 export const createDraftSuggestions = (request) => {
   const detectedFields = Array.isArray(request.fields) ? request.fields : [];
   const mappedFields = mapDetectedFields(detectedFields);
@@ -85,8 +102,10 @@ export const createDraftSuggestions = (request) => {
       kind: field.kind,
       value: valuesByKind[field.kind] ?? "",
       confidence: field.confidence,
+      source: sourceByKind[field.kind] ?? "no-match",
       requiresReview:
-        sensitiveFieldKinds.has(field.kind) || field.kind === "custom",
+        sensitiveFieldKinds.has(field.kind) ||
+        alwaysReviewKinds.has(field.kind),
     })),
   };
 };

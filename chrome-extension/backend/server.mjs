@@ -1,4 +1,4 @@
-import { readFile } from "node:fs/promises";
+import { mkdir, readFile, writeFile } from "node:fs/promises";
 import http from "node:http";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
@@ -11,9 +11,34 @@ import {
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const rootDir = path.resolve(__dirname, "..");
+const dataDir = path.join(rootDir, "data");
+const scanCapturesPath = path.join(dataDir, "scan-captures.json");
 const port = Number.parseInt(process.env.PORT ?? "4321", 10);
 let scanCaptures = [];
 let nextScanCaptureId = 1;
+
+const loadScanCaptures = async () => {
+  try {
+    const contents = await readFile(scanCapturesPath, "utf8");
+    const parsed = JSON.parse(contents);
+    scanCaptures = Array.isArray(parsed.captures) ? parsed.captures : [];
+    nextScanCaptureId =
+      Number.isInteger(parsed.nextScanCaptureId) && parsed.nextScanCaptureId > 0
+        ? parsed.nextScanCaptureId
+        : scanCaptures.length + 1;
+  } catch {
+    scanCaptures = [];
+    nextScanCaptureId = 1;
+  }
+};
+
+const saveScanCaptures = async () => {
+  await mkdir(dataDir, { recursive: true });
+  await writeFile(
+    scanCapturesPath,
+    JSON.stringify({ nextScanCaptureId, captures: scanCaptures }, null, 2),
+  );
+};
 
 const json = (response, status, body) => {
   response.writeHead(status, {
@@ -108,6 +133,7 @@ const server = http.createServer(async (request, response) => {
     };
     nextScanCaptureId += 1;
     scanCaptures = [...scanCaptures, capture].slice(-100);
+    await saveScanCaptures();
     json(response, 201, capture);
     return;
   }
@@ -125,6 +151,8 @@ const server = http.createServer(async (request, response) => {
 
   await sendStatic(response, url.pathname);
 });
+
+await loadScanCaptures();
 
 server.listen(port, () => {
   console.log(

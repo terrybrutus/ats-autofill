@@ -14,8 +14,7 @@ const defaultSettings = {
   fillMode: "approved-answer",
 };
 
-const getSettings = async () =>
-  chrome.storage.local.get(defaultSettings);
+const getSettings = async () => chrome.storage.local.get(defaultSettings);
 
 const saveSettings = async () => {
   const apiBaseUrl = apiBaseUrlInput.value.trim().replace(/\/$/, "");
@@ -94,7 +93,7 @@ const scanPage = async () => {
     pageTitle: page.pageTitle,
     fields: page.fields,
     mode: fillMode,
-    platform: "generic",
+    platform: page.platform || "generic",
     job: {
       company: "",
       title: page.pageTitle || "",
@@ -112,9 +111,7 @@ const scanPage = async () => {
   }
 
   const draft = await draftResponse.json();
-  const suggestions = Array.isArray(draft.suggestions)
-    ? draft.suggestions
-    : [];
+  const suggestions = Array.isArray(draft.suggestions) ? draft.suggestions : [];
   const reviewCount = suggestions.filter(
     (suggestion) => suggestion.requiresReview,
   ).length;
