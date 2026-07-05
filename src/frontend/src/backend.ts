@@ -10,7 +10,9 @@ import type {
   ApplicationRecord,
   DraftRequest,
   DraftResponse,
+  FieldSuggestion,
   LivingProfile,
+  ScanCapture,
 } from "./types";
 
 export { ExternalBlob } from "@caffeineai/object-storage";
@@ -41,6 +43,7 @@ export interface backendInterface {
   __applicationsState(): Promise<any>;
   __draftsState(): Promise<any>;
   __profileState(): Promise<any>;
+  __scanCapturesState(): Promise<any>;
   _initialize_access_control(): Promise<void>;
   _internet_identity_sign_in_finish(): Promise<Result>;
   _internet_identity_sign_in_start(): Promise<Uint8Array>;
@@ -60,9 +63,11 @@ export interface backendInterface {
   isCallerAdmin(): Promise<boolean>;
   listAnswers(): Promise<AnswerBankEntry[]>;
   listApplications(): Promise<ApplicationRecord[]>;
+  listScanCaptures(): Promise<ScanCapture[]>;
   recentDrafts(): Promise<DraftResponse[]>;
   saveAnswer(kind: string, prompt: string, answer: string, sensitive: boolean): Promise<AnswerBankEntry>;
   saveProfile(profile: LivingProfile): Promise<LivingProfile>;
+  saveScanCapture(request: DraftRequest, suggestions: FieldSuggestion[]): Promise<ScanCapture>;
 }
 
 const fromCandidRole = (value: { admin?: null; user?: null; guest?: null }): UserRole =>
@@ -113,6 +118,10 @@ export class Backend implements backendInterface {
 
   __profileState(): Promise<any> {
     return this.call(() => this.actor.__profileState());
+  }
+
+  __scanCapturesState(): Promise<any> {
+    return this.call(() => this.actor.__scanCapturesState());
   }
 
   _initialize_access_control(): Promise<void> {
@@ -172,6 +181,10 @@ export class Backend implements backendInterface {
     return this.call(() => this.actor.listApplications());
   }
 
+  listScanCaptures(): Promise<ScanCapture[]> {
+    return this.call(() => this.actor.listScanCaptures());
+  }
+
   recentDrafts(): Promise<DraftResponse[]> {
     return this.call(() => this.actor.recentDrafts());
   }
@@ -182,6 +195,10 @@ export class Backend implements backendInterface {
 
   saveProfile(profile: LivingProfile): Promise<LivingProfile> {
     return this.call(() => this.actor.saveProfile(profile));
+  }
+
+  saveScanCapture(request: DraftRequest, suggestions: FieldSuggestion[]): Promise<ScanCapture> {
+    return this.call(() => this.actor.saveScanCapture(request, suggestions));
   }
 }
 

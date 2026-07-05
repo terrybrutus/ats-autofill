@@ -98,3 +98,13 @@ export interface DraftResponse {
   suggestions: FieldSuggestion[];
   createdAt: bigint;
 }
+
+export interface ScanCapture {
+  id: bigint;
+  platform: string;
+  url: string;
+  pageTitle: string;
+  fields: DetectedField[];
+  suggestions: FieldSuggestion[];
+  createdAt: bigint;
+}

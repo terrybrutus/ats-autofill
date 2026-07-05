@@ -4,7 +4,9 @@ import type {
   ApplicationRecord,
   DraftRequest,
   DraftResponse,
+  FieldSuggestion,
   LivingProfile,
+  ScanCapture,
 } from "@/types";
 import { useActor } from "@caffeineai/core-infrastructure";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
@@ -122,5 +124,34 @@ export function useListApplications() {
       return actor.listApplications();
     },
     enabled: !!actor && !isFetching,
+  });
+}
+
+export function useListScanCaptures() {
+  const { actor, isFetching } = useActor(createActor);
+  return useQuery<ScanCapture[]>({
+    queryKey: ["scan-captures"],
+    queryFn: async () => {
+      if (!actor) return [];
+      return actor.listScanCaptures();
+    },
+    enabled: !!actor && !isFetching,
+  });
+}
+
+export function useSaveScanCapture() {
+  const { actor } = useActor(createActor);
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: async (input: {
+      request: DraftRequest;
+      suggestions: FieldSuggestion[];
+    }): Promise<ScanCapture> => {
+      if (!actor) throw new Error("Actor not ready");
+      return actor.saveScanCapture(input.request, input.suggestions);
+    },
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ["scan-captures"] });
+    },
   });
 }

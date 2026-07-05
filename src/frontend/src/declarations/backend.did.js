@@ -120,6 +120,15 @@ export const DraftResponse = IDL.Record({
   suggestions: IDL.Vec(FieldSuggestion),
   url: IDL.Text,
 });
+export const ScanCapture = IDL.Record({
+  createdAt: IDL.Int,
+  fields: IDL.Vec(DetectedField),
+  id: IDL.Nat,
+  pageTitle: IDL.Text,
+  platform: IDL.Text,
+  suggestions: IDL.Vec(FieldSuggestion),
+  url: IDL.Text,
+});
 
 export const idlService = IDL.Service({
   __accessControlState: IDL.Func([], [IDL.Reserved], ["query"]),
@@ -127,6 +136,7 @@ export const idlService = IDL.Service({
   __applicationsState: IDL.Func([], [IDL.Reserved], ["query"]),
   __draftsState: IDL.Func([], [IDL.Reserved], ["query"]),
   __profileState: IDL.Func([], [IDL.Reserved], ["query"]),
+  __scanCapturesState: IDL.Func([], [IDL.Reserved], ["query"]),
   _initialize_access_control: IDL.Func([], [], []),
   _internet_identity_sign_in_finish: IDL.Func([], [Result], []),
   _internet_identity_sign_in_start: IDL.Func([], [IDL.Vec(IDL.Nat8)], []),
@@ -143,9 +153,11 @@ export const idlService = IDL.Service({
   isCallerAdmin: IDL.Func([], [IDL.Bool], ["query"]),
   listAnswers: IDL.Func([], [IDL.Vec(AnswerBankEntry)], ["query"]),
   listApplications: IDL.Func([], [IDL.Vec(ApplicationRecord)], ["query"]),
+  listScanCaptures: IDL.Func([], [IDL.Vec(ScanCapture)], ["query"]),
   recentDrafts: IDL.Func([], [IDL.Vec(DraftResponse)], ["query"]),
   saveAnswer: IDL.Func([IDL.Text, IDL.Text, IDL.Text, IDL.Bool], [AnswerBankEntry], []),
   saveProfile: IDL.Func([LivingProfile], [LivingProfile], []),
+  saveScanCapture: IDL.Func([DraftRequest, IDL.Vec(FieldSuggestion)], [ScanCapture], []),
 });
 
 export const idlInitArgs = [];
@@ -268,6 +280,15 @@ export const idlFactory = ({ IDL }) => {
     suggestions: IDL.Vec(FieldSuggestion),
     url: IDL.Text,
   });
+  const ScanCapture = IDL.Record({
+    createdAt: IDL.Int,
+    fields: IDL.Vec(DetectedField),
+    id: IDL.Nat,
+    pageTitle: IDL.Text,
+    platform: IDL.Text,
+    suggestions: IDL.Vec(FieldSuggestion),
+    url: IDL.Text,
+  });
 
   return IDL.Service({
     __accessControlState: IDL.Func([], [IDL.Reserved], ["query"]),
@@ -275,6 +296,7 @@ export const idlFactory = ({ IDL }) => {
     __applicationsState: IDL.Func([], [IDL.Reserved], ["query"]),
     __draftsState: IDL.Func([], [IDL.Reserved], ["query"]),
     __profileState: IDL.Func([], [IDL.Reserved], ["query"]),
+    __scanCapturesState: IDL.Func([], [IDL.Reserved], ["query"]),
     _initialize_access_control: IDL.Func([], [], []),
     _internet_identity_sign_in_finish: IDL.Func([], [Result], []),
     _internet_identity_sign_in_start: IDL.Func([], [IDL.Vec(IDL.Nat8)], []),
@@ -291,9 +313,11 @@ export const idlFactory = ({ IDL }) => {
     isCallerAdmin: IDL.Func([], [IDL.Bool], ["query"]),
     listAnswers: IDL.Func([], [IDL.Vec(AnswerBankEntry)], ["query"]),
     listApplications: IDL.Func([], [IDL.Vec(ApplicationRecord)], ["query"]),
+    listScanCaptures: IDL.Func([], [IDL.Vec(ScanCapture)], ["query"]),
     recentDrafts: IDL.Func([], [IDL.Vec(DraftResponse)], ["query"]),
     saveAnswer: IDL.Func([IDL.Text, IDL.Text, IDL.Text, IDL.Bool], [AnswerBankEntry], []),
     saveProfile: IDL.Func([LivingProfile], [LivingProfile], []),
+    saveScanCapture: IDL.Func([DraftRequest, IDL.Vec(FieldSuggestion)], [ScanCapture], []),
   });
 };
 

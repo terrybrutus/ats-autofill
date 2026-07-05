@@ -31816,12 +31816,22 @@ const DraftResponse = Record({
   suggestions: Vec(FieldSuggestion),
   url: Text
 });
+const ScanCapture = Record({
+  createdAt: Int,
+  fields: Vec(DetectedField),
+  id: Nat,
+  pageTitle: Text,
+  platform: Text,
+  suggestions: Vec(FieldSuggestion),
+  url: Text
+});
 Service({
   __accessControlState: Func([], [Reserved], ["query"]),
   __answersState: Func([], [Reserved], ["query"]),
   __applicationsState: Func([], [Reserved], ["query"]),
   __draftsState: Func([], [Reserved], ["query"]),
   __profileState: Func([], [Reserved], ["query"]),
+  __scanCapturesState: Func([], [Reserved], ["query"]),
   _initialize_access_control: Func([], [], []),
   _internet_identity_sign_in_finish: Func([], [Result], []),
   _internet_identity_sign_in_start: Func([], [Vec(Nat8)], []),
@@ -31838,9 +31848,11 @@ Service({
   isCallerAdmin: Func([], [Bool], ["query"]),
   listAnswers: Func([], [Vec(AnswerBankEntry)], ["query"]),
   listApplications: Func([], [Vec(ApplicationRecord)], ["query"]),
+  listScanCaptures: Func([], [Vec(ScanCapture)], ["query"]),
   recentDrafts: Func([], [Vec(DraftResponse)], ["query"]),
   saveAnswer: Func([Text, Text, Text, Bool], [AnswerBankEntry], []),
-  saveProfile: Func([LivingProfile], [LivingProfile], [])
+  saveProfile: Func([LivingProfile], [LivingProfile], []),
+  saveScanCapture: Func([DraftRequest, Vec(FieldSuggestion)], [ScanCapture], [])
 });
 const idlFactory = ({ IDL: IDL2 }) => {
   const Error2 = IDL2.Variant({
@@ -31960,12 +31972,22 @@ const idlFactory = ({ IDL: IDL2 }) => {
     suggestions: IDL2.Vec(FieldSuggestion2),
     url: IDL2.Text
   });
+  const ScanCapture2 = IDL2.Record({
+    createdAt: IDL2.Int,
+    fields: IDL2.Vec(DetectedField2),
+    id: IDL2.Nat,
+    pageTitle: IDL2.Text,
+    platform: IDL2.Text,
+    suggestions: IDL2.Vec(FieldSuggestion2),
+    url: IDL2.Text
+  });
   return IDL2.Service({
     __accessControlState: IDL2.Func([], [IDL2.Reserved], ["query"]),
     __answersState: IDL2.Func([], [IDL2.Reserved], ["query"]),
     __applicationsState: IDL2.Func([], [IDL2.Reserved], ["query"]),
     __draftsState: IDL2.Func([], [IDL2.Reserved], ["query"]),
     __profileState: IDL2.Func([], [IDL2.Reserved], ["query"]),
+    __scanCapturesState: IDL2.Func([], [IDL2.Reserved], ["query"]),
     _initialize_access_control: IDL2.Func([], [], []),
     _internet_identity_sign_in_finish: IDL2.Func([], [Result2], []),
     _internet_identity_sign_in_start: IDL2.Func([], [IDL2.Vec(IDL2.Nat8)], []),
@@ -31982,9 +32004,11 @@ const idlFactory = ({ IDL: IDL2 }) => {
     isCallerAdmin: IDL2.Func([], [IDL2.Bool], ["query"]),
     listAnswers: IDL2.Func([], [IDL2.Vec(AnswerBankEntry2)], ["query"]),
     listApplications: IDL2.Func([], [IDL2.Vec(ApplicationRecord2)], ["query"]),
+    listScanCaptures: IDL2.Func([], [IDL2.Vec(ScanCapture2)], ["query"]),
     recentDrafts: IDL2.Func([], [IDL2.Vec(DraftResponse2)], ["query"]),
     saveAnswer: IDL2.Func([IDL2.Text, IDL2.Text, IDL2.Text, IDL2.Bool], [AnswerBankEntry2], []),
-    saveProfile: IDL2.Func([LivingProfile2], [LivingProfile2], [])
+    saveProfile: IDL2.Func([LivingProfile2], [LivingProfile2], []),
+    saveScanCapture: IDL2.Func([DraftRequest2, IDL2.Vec(FieldSuggestion2)], [ScanCapture2], [])
   });
 };
 new TextEncoder().encode("icfs-chunk/");
@@ -32024,6 +32048,9 @@ class Backend {
   __profileState() {
     return this.call(() => this.actor.__profileState());
   }
+  __scanCapturesState() {
+    return this.call(() => this.actor.__scanCapturesState());
+  }
   _initialize_access_control() {
     return this.call(() => this.actor._initialize_access_control());
   }
@@ -32062,6 +32089,9 @@ class Backend {
   listApplications() {
     return this.call(() => this.actor.listApplications());
   }
+  listScanCaptures() {
+    return this.call(() => this.actor.listScanCaptures());
+  }
   recentDrafts() {
     return this.call(() => this.actor.recentDrafts());
   }
@@ -32070,6 +32100,9 @@ class Backend {
   }
   saveProfile(profile) {
     return this.call(() => this.actor.saveProfile(profile));
+  }
+  saveScanCapture(request2, suggestions) {
+    return this.call(() => this.actor.saveScanCapture(request2, suggestions));
   }
 }
 function createActor(canisterId, _uploadFile, _downloadFile, options = {}) {
@@ -32181,6 +32214,17 @@ function useListApplications() {
     enabled: !!actor && !isFetching
   });
 }
+function useListScanCaptures() {
+  const { actor, isFetching } = useActor(createActor);
+  return useQuery({
+    queryKey: ["scan-captures"],
+    queryFn: async () => {
+      if (!actor) return [];
+      return actor.listScanCaptures();
+    },
+    enabled: !!actor && !isFetching
+  });
+}
 /**
  * @license lucide-react v0.511.0 - ISC
  *
@@ -32286,13 +32330,25 @@ const createLucideIcon = (iconName, iconNode) => {
  * This source code is licensed under the ISC license.
  * See the LICENSE file in the root directory of this source tree.
  */
-const __iconNode$5 = [
+const __iconNode$6 = [
   ["path", { d: "M12 12h.01", key: "1mp3jc" }],
   ["path", { d: "M16 6V4a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2", key: "1ksdt3" }],
   ["path", { d: "M22 13a18.15 18.15 0 0 1-20 0", key: "12hx5q" }],
   ["rect", { width: "20", height: "14", x: "2", y: "6", rx: "2", key: "i6l2r4" }]
 ];
-const BriefcaseBusiness = createLucideIcon("briefcase-business", __iconNode$5);
+const BriefcaseBusiness = createLucideIcon("briefcase-business", __iconNode$6);
+/**
+ * @license lucide-react v0.511.0 - ISC
+ *
+ * This source code is licensed under the ISC license.
+ * See the LICENSE file in the root directory of this source tree.
+ */
+const __iconNode$5 = [
+  ["ellipse", { cx: "12", cy: "5", rx: "9", ry: "3", key: "msslwz" }],
+  ["path", { d: "M3 5V19A9 3 0 0 0 21 19V5", key: "1wlel7" }],
+  ["path", { d: "M3 12A9 3 0 0 0 21 12", key: "mv7ke4" }]
+];
+const Database = createLucideIcon("database", __iconNode$5);
 /**
  * @license lucide-react v0.511.0 - ISC
  *
@@ -32300,11 +32356,15 @@ const BriefcaseBusiness = createLucideIcon("briefcase-business", __iconNode$5);
  * See the LICENSE file in the root directory of this source tree.
  */
 const __iconNode$4 = [
-  ["ellipse", { cx: "12", cy: "5", rx: "9", ry: "3", key: "msslwz" }],
-  ["path", { d: "M3 5V19A9 3 0 0 0 21 19V5", key: "1wlel7" }],
-  ["path", { d: "M3 12A9 3 0 0 0 21 12", key: "mv7ke4" }]
+  ["path", { d: "M14 2v4a2 2 0 0 0 2 2h4", key: "tnqrlb" }],
+  [
+    "path",
+    { d: "M4.268 21a2 2 0 0 0 1.727 1H18a2 2 0 0 0 2-2V7l-5-5H6a2 2 0 0 0-2 2v3", key: "ms7g94" }
+  ],
+  ["path", { d: "m9 18-1.5-1.5", key: "1j6qii" }],
+  ["circle", { cx: "5", cy: "14", r: "3", key: "ufru5t" }]
 ];
-const Database = createLucideIcon("database", __iconNode$4);
+const FileSearch = createLucideIcon("file-search", __iconNode$4);
 /**
  * @license lucide-react v0.511.0 - ISC
  *
@@ -41031,6 +41091,35 @@ function ApplicationTracker() {
     )) }) })
   ] });
 }
+function ScanCaptureLog() {
+  const { data: captures = [], isLoading } = useListScanCaptures();
+  return /* @__PURE__ */ jsxRuntimeExports.jsxs(Card, { className: "border-border bg-card shadow-subtle", children: [
+    /* @__PURE__ */ jsxRuntimeExports.jsx(CardHeader, { className: "pb-3", children: /* @__PURE__ */ jsxRuntimeExports.jsxs(CardTitle, { className: "flex items-center gap-2 text-base", children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsx(FileSearch, { className: "h-4 w-4 text-primary" }),
+      "ATS scan captures"
+    ] }) }),
+    /* @__PURE__ */ jsxRuntimeExports.jsx(CardContent, { children: isLoading ? /* @__PURE__ */ jsxRuntimeExports.jsx(Skeleton, { className: "h-24 w-full rounded-md" }) : captures.length === 0 ? /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-sm text-muted-foreground", children: "Extension scans saved for adapter tuning will appear here." }) : /* @__PURE__ */ jsxRuntimeExports.jsx("ul", { className: "grid gap-2", children: captures.map((capture) => /* @__PURE__ */ jsxRuntimeExports.jsxs(
+      "li",
+      {
+        className: "rounded-md border border-border p-3",
+        children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center justify-between gap-3", children: [
+            /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "font-medium", children: capture.pageTitle || capture.url }),
+            /* @__PURE__ */ jsxRuntimeExports.jsx(Badge, { variant: "outline", children: capture.platform })
+          ] }),
+          /* @__PURE__ */ jsxRuntimeExports.jsxs("p", { className: "mt-1 text-xs text-muted-foreground", children: [
+            capture.fields.length,
+            " fields - ",
+            capture.suggestions.length,
+            " suggestions - ",
+            formatTime(capture.createdAt)
+          ] })
+        ]
+      },
+      capture.id.toString()
+    )) }) })
+  ] });
+}
 function App() {
   return /* @__PURE__ */ jsxRuntimeExports.jsx(Layout, { children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "mx-auto grid max-w-7xl gap-6 px-5 py-6 sm:px-8 lg:grid-cols-[1.2fr_0.8fr]", children: [
     /* @__PURE__ */ jsxRuntimeExports.jsxs(
@@ -41062,6 +41151,7 @@ function App() {
             /* @__PURE__ */ jsxRuntimeExports.jsx(CardContent, { className: "text-sm leading-relaxed text-muted-foreground", children: "The Chrome extension scans ATS forms. This Caffeine app stores the living resume, approved answers, draft contract, and application history it should use." })
           ] }),
           /* @__PURE__ */ jsxRuntimeExports.jsx(AnswerBank, {}),
+          /* @__PURE__ */ jsxRuntimeExports.jsx(ScanCaptureLog, {}),
           /* @__PURE__ */ jsxRuntimeExports.jsx(ApplicationTracker, {})
         ]
       }

@@ -10,6 +10,7 @@ import {
   useGetProfile,
   useListAnswers,
   useListApplications,
+  useListScanCaptures,
   useSaveAnswer,
   useSaveProfile,
 } from "@/hooks/useQueries";
@@ -17,6 +18,7 @@ import type { DraftResponse, LivingProfile } from "@/types";
 import {
   BriefcaseBusiness,
   Database,
+  FileSearch,
   FileText,
   Loader2,
   PlugZap,
@@ -590,6 +592,47 @@ function ApplicationTracker() {
   );
 }
 
+function ScanCaptureLog() {
+  const { data: captures = [], isLoading } = useListScanCaptures();
+
+  return (
+    <Card className="border-border bg-card shadow-subtle">
+      <CardHeader className="pb-3">
+        <CardTitle className="flex items-center gap-2 text-base">
+          <FileSearch className="h-4 w-4 text-primary" />
+          ATS scan captures
+        </CardTitle>
+      </CardHeader>
+      <CardContent>
+        {isLoading ? (
+          <Skeleton className="h-24 w-full rounded-md" />
+        ) : captures.length === 0 ? (
+          <p className="text-sm text-muted-foreground">
+            Extension scans saved for adapter tuning will appear here.
+          </p>
+        ) : (
+          <ul className="grid gap-2">
+            {captures.map((capture) => (
+              <li
+                key={capture.id.toString()}
+                className="rounded-md border border-border p-3"
+              >
+                <div className="flex items-center justify-between gap-3">
+                  <p className="font-medium">{capture.pageTitle || capture.url}</p>
+                  <Badge variant="outline">{capture.platform}</Badge>
+                </div>
+                <p className="mt-1 text-xs text-muted-foreground">
+                  {capture.fields.length} fields - {capture.suggestions.length} suggestions - {formatTime(capture.createdAt)}
+                </p>
+              </li>
+            ))}
+          </ul>
+        )}
+      </CardContent>
+    </Card>
+  );
+}
+
 export default function App() {
   return (
     <Layout>
@@ -623,6 +666,7 @@ export default function App() {
             </CardContent>
           </Card>
           <AnswerBank />
+          <ScanCaptureLog />
           <ApplicationTracker />
         </motion.div>
       </div>

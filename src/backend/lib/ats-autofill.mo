@@ -11,6 +11,7 @@ module {
   public type DraftRequest = Types.DraftRequest;
   public type DraftResponse = Types.DraftResponse;
   public type FieldSuggestion = Types.FieldSuggestion;
+  public type ScanCapture = Types.ScanCapture;
 
   public func defaultProfile(now : Int) : LivingProfile {
     {
@@ -136,6 +137,29 @@ module {
 
   public func recentAnswers(answers : [AnswerBankEntry]) : [AnswerBankEntry] {
     tail(answers, 20);
+  };
+
+  public func createScanCapture(
+    captures : [ScanCapture],
+    nextId : Nat,
+    request : DraftRequest,
+    suggestions : [FieldSuggestion],
+    now : Int,
+  ) : ([ScanCapture], Nat, ScanCapture) {
+    let created = {
+      id = nextId;
+      platform = request.platform;
+      url = request.url;
+      pageTitle = request.pageTitle;
+      fields = request.fields;
+      suggestions = suggestions;
+      createdAt = now;
+    };
+    (append(captures, created), nextId + 1, created);
+  };
+
+  public func recentScanCaptures(captures : [ScanCapture]) : [ScanCapture] {
+    tail(captures, 25);
   };
 
   func suggestValue(

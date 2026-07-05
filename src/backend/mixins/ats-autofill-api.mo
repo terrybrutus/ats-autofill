@@ -8,6 +8,7 @@ mixin (
   answersState : { var answers : [Types.AnswerBankEntry]; var nextId : Nat },
   applicationsState : { var applications : [Types.ApplicationRecord]; var nextId : Nat },
   draftsState : { var drafts : [Types.DraftResponse]; var nextId : Nat },
+  scanCapturesState : { var captures : [Types.ScanCapture]; var nextId : Nat },
 ) {
   public shared ({ caller }) func saveProfile(profile : Types.LivingProfile) : async Types.LivingProfile {
     ignore caller;
@@ -90,6 +91,27 @@ mixin (
 
   public query func recentDrafts() : async [Types.DraftResponse] {
     draftsState.drafts;
+  };
+
+  public shared ({ caller }) func saveScanCapture(
+    request : Types.DraftRequest,
+    suggestions : [Types.FieldSuggestion],
+  ) : async Types.ScanCapture {
+    ignore caller;
+    let result = AtsAutofill.createScanCapture(
+      scanCapturesState.captures,
+      scanCapturesState.nextId,
+      request,
+      suggestions,
+      Time.now(),
+    );
+    scanCapturesState.captures := result.0;
+    scanCapturesState.nextId := result.1;
+    result.2;
+  };
+
+  public query func listScanCaptures() : async [Types.ScanCapture] {
+    AtsAutofill.recentScanCaptures(scanCapturesState.captures);
   };
 
   public query func getExtensionContractVersion() : async Text {

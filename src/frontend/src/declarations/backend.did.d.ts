@@ -108,6 +108,15 @@ export interface DraftResponse {
   suggestions: Array<FieldSuggestion>;
   url: string;
 }
+export interface ScanCapture {
+  createdAt: bigint;
+  fields: Array<DetectedField>;
+  id: bigint;
+  pageTitle: string;
+  platform: string;
+  suggestions: Array<FieldSuggestion>;
+  url: string;
+}
 
 export interface _SERVICE {
   __accessControlState: ActorMethod<[], any>;
@@ -115,6 +124,7 @@ export interface _SERVICE {
   __applicationsState: ActorMethod<[], any>;
   __draftsState: ActorMethod<[], any>;
   __profileState: ActorMethod<[], any>;
+  __scanCapturesState: ActorMethod<[], any>;
   _initialize_access_control: ActorMethod<[], undefined>;
   _internet_identity_sign_in_finish: ActorMethod<[], Result>;
   _internet_identity_sign_in_start: ActorMethod<[], Uint8Array>;
@@ -127,9 +137,11 @@ export interface _SERVICE {
   isCallerAdmin: ActorMethod<[], boolean>;
   listAnswers: ActorMethod<[], Array<AnswerBankEntry>>;
   listApplications: ActorMethod<[], Array<ApplicationRecord>>;
+  listScanCaptures: ActorMethod<[], Array<ScanCapture>>;
   recentDrafts: ActorMethod<[], Array<DraftResponse>>;
   saveAnswer: ActorMethod<[string, string, string, boolean], AnswerBankEntry>;
   saveProfile: ActorMethod<[LivingProfile], LivingProfile>;
+  saveScanCapture: ActorMethod<[DraftRequest, Array<FieldSuggestion>], ScanCapture>;
 }
 export declare const idlService: IDL.ServiceClass;
 export declare const idlInitArgs: IDL.Type[];

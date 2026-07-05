@@ -14,6 +14,7 @@ actor {
   let answersState : { var answers : [Types.AnswerBankEntry]; var nextId : Nat };
   let applicationsState : { var applications : [Types.ApplicationRecord]; var nextId : Nat };
   let draftsState : { var drafts : [Types.DraftResponse]; var nextId : Nat };
+  let scanCapturesState : { var captures : [Types.ScanCapture]; var nextId : Nat };
 
-  include AtsAutofillApi(profileState, answersState, applicationsState, draftsState);
+  include AtsAutofillApi(profileState, answersState, applicationsState, draftsState, scanCapturesState);
 };

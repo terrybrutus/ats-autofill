@@ -132,12 +132,23 @@ type DraftResponse =
    suggestions: vec FieldSuggestion;
    url: text;
  };
+type ScanCapture = 
+ record {
+   createdAt: int;
+   fields: vec DetectedField;
+   id: nat;
+   pageTitle: text;
+   platform: text;
+   suggestions: vec FieldSuggestion;
+   url: text;
+ };
 service : {
   __accessControlState: () -> (reserved) query;
   __answersState: () -> (reserved) query;
   __applicationsState: () -> (reserved) query;
   __draftsState: () -> (reserved) query;
   __profileState: () -> (reserved) query;
+  __scanCapturesState: () -> (reserved) query;
   _initialize_access_control: () -> ();
   _internet_identity_sign_in_finish: () -> (Result);
   _internet_identity_sign_in_start: () -> (blob);
@@ -157,7 +168,9 @@ service : {
   isCallerAdmin: () -> (bool) query;
   listAnswers: () -> (vec AnswerBankEntry) query;
   listApplications: () -> (vec ApplicationRecord) query;
+  listScanCaptures: () -> (vec ScanCapture) query;
   recentDrafts: () -> (vec DraftResponse) query;
   saveAnswer: (kind: text, prompt: text, answer: text, sensitive: bool) -> (AnswerBankEntry);
   saveProfile: (LivingProfile) -> (LivingProfile);
+  saveScanCapture: (DraftRequest, vec FieldSuggestion) -> (ScanCapture);
 }

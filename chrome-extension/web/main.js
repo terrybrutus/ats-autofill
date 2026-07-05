@@ -1,5 +1,6 @@
 const health = document.querySelector("#health");
 const profile = document.querySelector("#profile");
+const captures = document.querySelector("#captures");
 
 const loadDashboard = async () => {
   const healthResponse = await fetch("/api/health");
@@ -11,6 +12,21 @@ const loadDashboard = async () => {
   const profileResponse = await fetch("/api/profile");
   const profileData = await profileResponse.json();
   profile.textContent = `${profileData.identity.fullName} - ${profileData.identity.location}`;
+
+  const capturesResponse = await fetch("/api/scan-captures");
+  const captureData = await capturesResponse.json();
+  if (!captureData.length) {
+    captures.textContent = "No captures saved yet.";
+    return;
+  }
+
+  captures.innerHTML = `<ul>${captureData
+    .slice(0, 10)
+    .map(
+      (capture) =>
+        `<li><strong>${capture.fieldCount} fields</strong> from ${capture.platform} - ${capture.pageTitle || capture.url}</li>`,
+    )
+    .join("")}</ul>`;
 };
 
 loadDashboard().catch((error) => {

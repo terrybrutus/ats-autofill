@@ -99,4 +99,14 @@ module {
     suggestions : [FieldSuggestion];
     createdAt : Int;
   };
+
+  public type ScanCapture = {
+    id : Nat;
+    platform : Text;
+    url : Text;
+    pageTitle : Text;
+    fields : [DetectedField];
+    suggestions : [FieldSuggestion];
+    createdAt : Int;
+  };
 };

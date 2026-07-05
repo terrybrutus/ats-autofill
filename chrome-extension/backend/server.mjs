@@ -12,6 +12,8 @@ import {
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const rootDir = path.resolve(__dirname, "..");
 const port = Number.parseInt(process.env.PORT ?? "4321", 10);
+let scanCaptures = [];
+let nextScanCaptureId = 1;
 
 const json = (response, status, body) => {
   response.writeHead(status, {
@@ -83,6 +85,30 @@ const server = http.createServer(async (request, response) => {
 
   if (url.pathname === "/api/applications") {
     json(response, 200, mockApplications);
+    return;
+  }
+
+  if (url.pathname === "/api/scan-captures" && request.method === "GET") {
+    json(response, 200, scanCaptures.slice(-25).reverse());
+    return;
+  }
+
+  if (url.pathname === "/api/scan-captures" && request.method === "POST") {
+    const body = await readBody(request);
+    const capture = {
+      id: `scan_${nextScanCaptureId}`,
+      sequence: nextScanCaptureId,
+      platform: body.platform ?? "generic",
+      url: body.url ?? "",
+      pageTitle: body.pageTitle ?? "",
+      fieldCount: Array.isArray(body.fields) ? body.fields.length : 0,
+      fields: Array.isArray(body.fields) ? body.fields : [],
+      suggestions: Array.isArray(body.suggestions) ? body.suggestions : [],
+      createdAt: new Date().toISOString(),
+    };
+    nextScanCaptureId += 1;
+    scanCaptures = [...scanCaptures, capture].slice(-100);
+    json(response, 201, capture);
     return;
   }
 

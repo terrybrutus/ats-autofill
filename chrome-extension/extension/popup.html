@@ -32,9 +32,13 @@
         <button id="saveSettings" type="submit">Save</button>
       </form>
       <button id="scan" type="button">Scan current page</button>
+      <button id="saveScan" class="secondary" type="button" disabled>
+        Save scan capture
+      </button>
       <a id="openBackend" href="http://localhost:4321" target="_blank" rel="noreferrer">
         Open backend
       </a>
+      <p id="captureStatus"></p>
       <section id="results" aria-live="polite"></section>
     </main>
     <script type="module" src="popup.js"></script>

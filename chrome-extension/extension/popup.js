@@ -1,10 +1,13 @@
 const status = document.querySelector("#status");
 const results = document.querySelector("#results");
 const scanButton = document.querySelector("#scan");
+const saveScanButton = document.querySelector("#saveScan");
 const settingsForm = document.querySelector("#settings");
 const apiBaseUrlInput = document.querySelector("#apiBaseUrl");
 const fillModeSelect = document.querySelector("#fillMode");
 const openBackendLink = document.querySelector("#openBackend");
+const captureStatus = document.querySelector("#captureStatus");
+let lastScan = null;
 
 const defaultSettings = {
   apiBaseUrl: "http://localhost:4321",
@@ -83,22 +86,25 @@ const scanPage = async () => {
   }
 
   results.textContent = "Scanning current page...";
+  saveScanButton.disabled = true;
+  captureStatus.textContent = "";
   const page = await detectFieldsInTab(tab.id);
+  const draftRequest = {
+    url: page.url,
+    pageTitle: page.pageTitle,
+    fields: page.fields,
+    mode: fillMode,
+    platform: "generic",
+    job: {
+      company: "",
+      title: page.pageTitle || "",
+      description: "",
+    },
+  };
   const draftResponse = await fetch(`${apiBaseUrl}/api/draft`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({
-      url: page.url,
-      pageTitle: page.pageTitle,
-      fields: page.fields,
-      mode: fillMode,
-      platform: "generic",
-      job: {
-        company: "",
-        title: page.pageTitle || "",
-        description: "",
-      },
-    }),
+    body: JSON.stringify(draftRequest),
   });
 
   if (!draftResponse.ok) {
@@ -112,6 +118,11 @@ const scanPage = async () => {
   const reviewCount = suggestions.filter(
     (suggestion) => suggestion.requiresReview,
   ).length;
+  lastScan = {
+    ...draftRequest,
+    suggestions,
+  };
+  saveScanButton.disabled = false;
 
   results.innerHTML = `
     <h2>${suggestions.length} fields detected</h2>
@@ -132,6 +143,30 @@ const scanPage = async () => {
   `;
 };
 
+const saveScanCapture = async () => {
+  if (!lastScan) {
+    captureStatus.textContent = "Scan a page first.";
+    return;
+  }
+
+  const { apiBaseUrl } = await getSettings();
+  saveScanButton.disabled = true;
+  captureStatus.textContent = "Saving scan...";
+  const response = await fetch(`${apiBaseUrl}/api/scan-captures`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(lastScan),
+  });
+
+  if (!response.ok) {
+    saveScanButton.disabled = false;
+    throw new Error(`Save failed: ${response.status}`);
+  }
+
+  const capture = await response.json();
+  captureStatus.textContent = `Saved scan ${capture.id ?? ""} (${capture.fieldCount ?? lastScan.fields.length} fields).`;
+};
+
 settingsForm.addEventListener("submit", (event) => {
   event.preventDefault();
   saveSettings().catch((error) => {
@@ -143,6 +178,13 @@ scanButton.addEventListener("click", () => {
   scanPage().catch((error) => {
     results.textContent =
       error instanceof Error ? error.message : "Scan failed.";
+  });
+});
+
+saveScanButton.addEventListener("click", () => {
+  saveScanCapture().catch((error) => {
+    captureStatus.textContent =
+      error instanceof Error ? error.message : "Save failed.";
   });
 });
 
